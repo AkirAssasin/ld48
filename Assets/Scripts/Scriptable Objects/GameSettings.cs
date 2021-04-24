@@ -5,6 +5,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Game Settings", menuName = "Scriptable Objects/Game Settings")]
 public class GameSettings : ScriptableObject {
 
+    [Header("Corridor")]
+    public float paddingBetweenCorridors;
+
     [Header("Prefabs")]
     public GameObject wallDisplayPrefab;
     public GameObject projectilePrefab;
@@ -20,4 +23,5 @@ public class GameSettings : ScriptableObject {
     public Sprite actorRecoilSprite;
     public Sprite actorDyingSprite;
     public Sprite actorDeadSprite;
+    public Sprite actorFallSprite;
 }

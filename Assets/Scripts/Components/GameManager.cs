@@ -18,7 +18,6 @@ public class GameManager : MonoBehaviour {
 
     // list of corridors
     [Header("Corridors")]
-    public float m_paddingBetweenCorridors;
     public int m_corridorLength;
     List<Corridor> m_corridors;
 
@@ -43,7 +42,7 @@ public class GameManager : MonoBehaviour {
 
             // compute position
             int currentDepth = m_corridors.Count;
-            Vector2 pos = new Vector2(0, (-1f - m_paddingBetweenCorridors) * currentDepth);
+            Vector2 pos = new Vector2(0, (-1f - s_gameSettings.paddingBetweenCorridors) * currentDepth);
 
             // create corridor
             Corridor newCorridor = new Corridor(pos, m_corridorLength);

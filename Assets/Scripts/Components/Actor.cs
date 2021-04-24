@@ -40,7 +40,10 @@ public class Actor : MonoBehaviour {
     [Header("Movement")]
     public float m_faceDirectionDuration;
     public float m_moveDuration;
+    public float m_descendDuration;
     public AnimationCurve m_moveCurve;
+    public AnimationCurve m_descendCurve;
+    public AnimationCurve m_ascendCurve;
     
     // controller
     IActorController m_controller;
@@ -233,6 +236,43 @@ public class Actor : MonoBehaviour {
         m_currentAction = m_currentAction.StartCoroutine(this, ProjectileFireAction());
     }
 
+    // descend action
+    IEnumerator DescendAction (Corridor nextCorridor) {
+
+        // set sprite
+        m_renderer.sprite = GameManager.s_gameSettings.actorFallSprite;
+
+        // get end position
+        Vector2 start = m_transform.localPosition;
+        Vector2 end = start;
+        end.y -= 1f + GameManager.s_gameSettings.paddingBetweenCorridors;
+        
+        // descend
+        bool dropKicked = false;
+        yield return new RunForDuration(m_descendDuration, nt => {
+            
+            // lerp position
+            m_transform.localPosition = Vector2.Lerp(start, end, m_descendCurve.Evaluate(nt));
+            
+            // do drop kick
+            if (!dropKicked && nt > 0.5f) {
+
+                for (int i = 0; i < nextCorridor.m_actors.Count; ++i) {
+
+                    Actor actor = nextCorridor.m_actors[i];
+                    if (actor.currentCell == m_currentCell) actor.Kill(0f);
+                }
+                dropKicked = true;
+            }
+        });
+
+        // enter next corridor
+        EnterCorridor(nextCorridor, m_currentCell);
+
+        // reset sprite
+        m_renderer.sprite = GameManager.s_gameSettings.actorAimSprite;
+    }
+
     // helper to go deeper
     public void Descend () {
 
@@ -245,15 +285,45 @@ public class Actor : MonoBehaviour {
         // get next corridor
         Corridor nextCorridor = m_gameManager.GetCorridor(++m_currentDepth);
 
-        // drop-kick the guy below
-        for (int i = 0; i < nextCorridor.m_actors.Count; ++i) {
+        // begin descend action
+        m_currentAction = m_currentAction.StartCoroutine(this, DescendAction(nextCorridor));
+    }
 
-            Actor actor = nextCorridor.m_actors[i];
-            if (actor.currentCell == m_currentCell) actor.Kill(0f);
-        }
+    // ascend action
+    IEnumerator AscendAction (Corridor nextCorridor) {
+
+        // set sprite
+        m_renderer.sprite = GameManager.s_gameSettings.actorFallSprite;
+
+        // get end position
+        Vector2 start = m_transform.localPosition;
+        Vector2 end = start;
+        end.y += 1f + GameManager.s_gameSettings.paddingBetweenCorridors;
+        
+        // descend
+        bool uppercut = false;
+        yield return new RunForDuration(m_descendDuration, nt => {
+            
+            // lerp position
+            m_transform.localPosition = Vector2.LerpUnclamped(start, end, m_ascendCurve.Evaluate(nt));
+            
+            // do uppercut
+            if (!uppercut && nt > 0.5f) {
+
+                for (int i = 0; i < nextCorridor.m_actors.Count; ++i) {
+
+                    Actor actor = nextCorridor.m_actors[i];
+                    if (actor.currentCell == m_currentCell) actor.Kill(0f);
+                }
+                uppercut = true;
+            }
+        });
 
         // enter next corridor
         EnterCorridor(nextCorridor, m_currentCell);
+
+        // reset sprite
+        m_renderer.sprite = GameManager.s_gameSettings.actorAimSprite;
     }
 
     // helper to go up
@@ -270,8 +340,8 @@ public class Actor : MonoBehaviour {
         if (!topCorridor.m_cells[m_currentCell].m_hasHole) return;
 
         // ok climb up
-        EnterCorridor(topCorridor, m_currentCell);
         --m_currentDepth;
+        m_currentAction = m_currentAction.StartCoroutine(this, AscendAction(topCorridor));
     }
 
     // death action
