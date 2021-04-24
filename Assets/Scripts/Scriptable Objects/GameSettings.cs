@@ -8,6 +8,7 @@ public class GameSettings : ScriptableObject {
     [Header("Prefabs")]
     public GameObject wallDisplayPrefab;
     public GameObject projectilePrefab;
+    public GameObject enemyPrefab;
 
     [Header("Wall Sprites")]
     public Sprite wallNormalSprite; 

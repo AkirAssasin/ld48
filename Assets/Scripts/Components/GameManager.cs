@@ -40,11 +40,23 @@ public class GameManager : MonoBehaviour {
 
         // if the depth doesn't exist, keep making corridors
         while (depth >= m_corridors.Count) {
-            
+
             // compute position
-            Vector2 pos = new Vector2(0, (-1f - m_paddingBetweenCorridors) * m_corridors.Count);
-            m_corridors.Add(new Corridor(pos, m_corridorLength));
+            int currentDepth = m_corridors.Count;
+            Vector2 pos = new Vector2(0, (-1f - m_paddingBetweenCorridors) * currentDepth);
+
+            // create corridor
+            Corridor newCorridor = new Corridor(pos, m_corridorLength);
+            m_corridors.Add(newCorridor);
+
+            // populate with one enemy
+            if (currentDepth > 0) {
+
+                EnemyActorController enemy = EnemyActorController.GetFromPool(s_gameSettings.enemyPrefab);
+                enemy.Initialize(this, currentDepth, Random.Range(0, m_corridorLength));
+            }
         }
+
         return m_corridors[depth];
     }
 }

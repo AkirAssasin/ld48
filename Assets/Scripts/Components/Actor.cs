@@ -11,6 +11,9 @@ public interface IActorController {
 // actor component - can be controlled by IActorController
 public class Actor : MonoBehaviour {
 
+    // public getters
+    public int currentCell => m_currentCell;
+
     // public settings
     [Header("Projectile")]
     public float m_projectileSpread;
@@ -87,9 +90,10 @@ public class Actor : MonoBehaviour {
         int result = m_currentCell + dx;
         if (result < 0 || result >= m_currentCorridor.Length) return;
 
-        // move (no animation yet)
-        m_facingRight = (dx > 0);
-        SetToCell(result);
+        // if facing wrong direction, turn instead of move
+        if (m_facingRight != dx > 0) {
+            m_facingRight = (dx > 0);
+        } else SetToCell(result);
     }
 
     // helper to fire projectile
@@ -100,7 +104,7 @@ public class Actor : MonoBehaviour {
 
         // spawn projectile
         Projectile projectile = Projectile.GetFromPool(GameManager.s_gameSettings.projectilePrefab);
-        projectile.Initialize(m_currentCorridor, m_currentCorridor.GetCellPosition(m_currentCell), radian);
+        projectile.Initialize(m_currentCorridor, this, m_currentCorridor.GetCellPosition(m_currentCell), radian);
     }
 
     // helper to go deeper
@@ -128,14 +132,22 @@ public class Actor : MonoBehaviour {
         --m_currentDepth;
     }
 
+    // hit by projectile
+    public void HitByProjectile (Projectile projectile) {
+
+        // temporary
+        Pool();
+    }
+
     // pool function
     public void Pool () {
 
         // call controller pool
         if (!m_controller.Pool()) return;
 
-        // unparent
+        // exit from corridor
         m_transform.SetParent(null);
+        m_currentCorridor?.m_actors.Remove(this);
 
         // disable renderer
         m_renderer.enabled = false;

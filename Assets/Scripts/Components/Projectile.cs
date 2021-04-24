@@ -30,12 +30,15 @@ public class Projectile : PoolableObject<Projectile> {
     // trail after collision
     float m_trailLengthLeft;
 
+    // actor to ignore
+    Actor m_actorToIgnore;
+
     // component references
     Transform m_transform;
     SpriteRenderer m_renderer;
 
     // initialize function
-    public void Initialize (Corridor corridor, Vector2 position, float radian) {
+    public void Initialize (Corridor corridor, Actor actorToIgnore, Vector2 position, float radian) {
 
         // call poolable initialize
         base.Initialize();
@@ -60,6 +63,7 @@ public class Projectile : PoolableObject<Projectile> {
         m_transform.localEulerAngles = new Vector3(0, 0, radian * Mathf.Rad2Deg);
 
         // reset collision state
+        m_actorToIgnore = actorToIgnore;
         m_collidedWithCorridor = false;
 
         // initialize renderer
@@ -112,6 +116,31 @@ public class Projectile : PoolableObject<Projectile> {
                 m_transform.localScale = new Vector3(m_trailLength, m_trailWidth, 1f);
                 m_transform.localPosition = m_position - m_unitVelocity * (m_trailLength * 0.5f);
                 m_trailLengthLeft = m_trailLength;
+            }
+
+            // compute collision with actors
+            int newCell = Mathf.FloorToInt(m_position.x);
+            if (m_currentCell != newCell) {
+
+                int min, max;
+                if (m_currentCell < newCell) {
+                    min = m_currentCell + 1;
+                    max = newCell;
+                } else {
+                    min = newCell;
+                    max = m_currentCell - 1;
+                }
+
+                // check all actors in the corridor
+                for (int i = 0; i < m_corridor.m_actors.Count; ++i) {
+
+                    // get actor that is not ignored
+                    Actor actor = m_corridor.m_actors[i];
+                    if (actor == m_actorToIgnore) continue;
+
+                    // hit the actor
+                    if (actor.currentCell >= min && actor.currentCell <= max) actor.HitByProjectile(this);
+                }
             }
         }
 
