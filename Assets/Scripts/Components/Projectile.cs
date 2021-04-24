@@ -56,7 +56,8 @@ public class Projectile : PoolableObject<Projectile> {
         // initialize position in corridor
         m_startingPosition = m_position = position;
         m_transform.localPosition = m_position;
-        m_currentCell = Mathf.FloorToInt(m_position.x);
+        m_currentCell = Mathf.RoundToInt(m_position.x);
+        Debug.Log("fired from " + m_currentCell);
 
         // initialize movement
         m_unitVelocity = new Vector2(Mathf.Cos(radian), Mathf.Sin(radian));
@@ -119,7 +120,7 @@ public class Projectile : PoolableObject<Projectile> {
             }
 
             // compute collision with actors
-            int newCell = Mathf.FloorToInt(m_position.x);
+            int newCell = Mathf.Clamp(Mathf.RoundToInt(m_position.x), 0, m_corridor.Length - 1);
             if (m_currentCell != newCell) {
 
                 int min, max;
@@ -141,6 +142,10 @@ public class Projectile : PoolableObject<Projectile> {
                     // hit the actor
                     if (actor.currentCell >= min && actor.currentCell <= max) actor.HitByProjectile(this);
                 }
+
+                // update current cell
+                Debug.Log("from " + m_currentCell + " to " + newCell);
+                m_currentCell = newCell;
             }
         }
 

@@ -182,7 +182,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: dc2105d85c34c2749b79187a11f73763, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 965c2610cc1819842ae318658a3dd1c9, type: 3}
   m_Color: {r: 0.019607844, g: 0.019607844, b: 0.019607844, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -202,7 +202,7 @@ Transform:
   m_GameObject: {fileID: 3588047}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.9, y: 0.9, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -220,6 +220,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_projectileSpread: 5
+  m_gunPosition: {x: 0.31, y: 0.34}
+  m_yOffset: -0.1
 --- !u!114 &3588051
 MonoBehaviour:
   m_ObjectHideFlags: 0

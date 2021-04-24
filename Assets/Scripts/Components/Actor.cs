@@ -17,6 +17,10 @@ public class Actor : MonoBehaviour {
     // public settings
     [Header("Projectile")]
     public float m_projectileSpread;
+    public Vector2 m_gunPosition;
+
+    [Header("Offset")]
+    public float m_yOffset;
     
     // controller
     IActorController m_controller;
@@ -54,7 +58,10 @@ public class Actor : MonoBehaviour {
         // enter corridor
         m_currentDepth = depth;
         EnterCorridor(m_gameManager.GetCorridor(m_currentDepth), cell);
-        m_facingRight = true;
+
+        // face random direction
+        m_facingRight = Random.value > 0.5f;
+        m_renderer.flipX = !m_facingRight;
 
         // initialize renderer
         m_renderer.enabled = true;
@@ -80,7 +87,7 @@ public class Actor : MonoBehaviour {
 
         // move corridor and transform position
         m_currentCell = cell;
-        m_transform.localPosition = m_currentCorridor.GetCellPosition(m_currentCell);
+        m_transform.localPosition = m_currentCorridor.GetCellPosition(m_currentCell) + new Vector2(0, m_yOffset);
     }
 
     // helper to move in corridor
@@ -93,6 +100,7 @@ public class Actor : MonoBehaviour {
         // if facing wrong direction, turn instead of move
         if (m_facingRight != dx > 0) {
             m_facingRight = (dx > 0);
+            m_renderer.flipX = !m_facingRight;
         } else SetToCell(result);
     }
 
@@ -101,10 +109,15 @@ public class Actor : MonoBehaviour {
 
         // compute angle
         float radian = (m_facingRight ? 0 : Mathf.PI) + (Random.value - 0.5f) * m_projectileSpread * Mathf.Deg2Rad;
+        
+        // compute position
+        Vector2 position = m_currentCorridor.GetCellPosition(m_currentCell);
+        position.y += m_gunPosition.y + m_yOffset;
+        position.x += m_facingRight ? m_gunPosition.x : -m_gunPosition.x;
 
         // spawn projectile
         Projectile projectile = Projectile.GetFromPool(GameManager.s_gameSettings.projectilePrefab);
-        projectile.Initialize(m_currentCorridor, this, m_currentCorridor.GetCellPosition(m_currentCell), radian);
+        projectile.Initialize(m_currentCorridor, this, position, radian);
     }
 
     // helper to go deeper
