@@ -18,10 +18,11 @@ public class Corridor {
     public GameObject m_root;
 
     // constructor
-    public Corridor (int length) {
+    public Corridor (Vector2 position, int length) {
 
         // create root gameobject
         m_root = new GameObject("Corridor");
+        m_root.transform.position = position;
 
         // create cell array
         m_cells = new Cell[length];
@@ -40,6 +41,13 @@ public class Corridor {
 
         // just like this for now
         return new Vector2(cell, 0);
+    }
+
+    // helper to make hole
+    public void MakeHole (int cell) {
+
+        // make hole in cell
+        m_cells[cell].MakeHole();
     }
 
     // delete root and pool all inside

@@ -14,6 +14,10 @@ public class Actor : MonoBehaviour {
     // controller
     IActorController m_controller;
 
+    // game manager
+    GameManager m_gameManager;
+    int m_currentDepth;
+
     // corridor position
     Corridor m_currentCorridor;
     int m_currentCell;
@@ -23,10 +27,13 @@ public class Actor : MonoBehaviour {
     SpriteRenderer m_renderer;
 
     // initialize function
-    public void Initialize (IActorController controller, Corridor corridor, int cell) {
+    public void Initialize (IActorController controller, GameManager gameManager, int depth, int cell) {
 
-        // initialize controller
+        // reference controller
         m_controller = controller;
+
+        // reference game manager
+        m_gameManager = gameManager;
 
         // get components
         if (m_transform == null) {
@@ -35,7 +42,8 @@ public class Actor : MonoBehaviour {
         }
 
         // enter corridor
-        EnterCorridor(corridor, cell);
+        m_currentDepth = depth;
+        EnterCorridor(m_gameManager.GetCorridor(m_currentDepth), cell);
 
         // initialize renderer
         m_renderer.enabled = true;
@@ -50,7 +58,7 @@ public class Actor : MonoBehaviour {
         // enter new corridor
         m_currentCorridor = corridor;
         m_transform.SetParent(m_currentCorridor.m_root.transform);
-        m_currentCorridor?.m_actors.Add(this);
+        m_currentCorridor.m_actors.Add(this);
 
         // update position in corridor
         SetToCell(cell);
@@ -73,6 +81,16 @@ public class Actor : MonoBehaviour {
 
         // move (no animation yet)
         SetToCell(result);
+    }
+
+    // helper to go deeper
+    public void Descend () {
+
+        // make hole in corridor
+        m_currentCorridor.MakeHole(m_currentCell);
+
+        // enter next corridor
+        EnterCorridor(m_gameManager.GetCorridor(++m_currentDepth), m_currentCell);
     }
 
     // pool function

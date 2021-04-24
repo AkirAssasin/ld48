@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wallDisplayPrefab: {fileID: 3587510308239809499, guid: 170df9fc52c37dc479991990ae7842f6, type: 3}
   wallNormalSprite: {fileID: 7482667652216324306, guid: dc2105d85c34c2749b79187a11f73763, type: 3}
+  holeSprite: {fileID: 7482667652216324306, guid: dc2105d85c34c2749b79187a11f73763, type: 3}

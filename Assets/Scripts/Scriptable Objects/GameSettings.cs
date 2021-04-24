@@ -9,5 +9,6 @@ public class GameSettings : ScriptableObject {
     public GameObject wallDisplayPrefab;
 
     [Header("Wall Sprites")]
-    public Sprite wallNormalSprite;
+    public Sprite wallNormalSprite; 
+    public Sprite holeSprite;
 }

@@ -26,7 +26,7 @@ public class WallDisplay : PoolableObject<WallDisplay> {
 
         // initialize position
         m_transform.SetParent(parent);
-        m_transform.position = position;
+        m_transform.localPosition = position;
 
         // initialize sprite
         m_renderer.sprite = sprite;

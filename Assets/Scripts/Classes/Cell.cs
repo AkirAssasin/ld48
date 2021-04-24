@@ -39,6 +39,18 @@ public class Cell {
         m_holeDisplay = null;
     }
 
+    // helper to make hole
+    public void MakeHole () {
+
+        // does nothing if already has hole
+        if (m_hasHole) return;
+
+        // initialize hole state and display
+        m_hasHole = true;
+        m_holeDisplay = WallDisplay.GetFromPool(GameManager.s_gameSettings.wallDisplayPrefab);
+        m_holeDisplay.Initialize(m_root.transform, new Vector2(m_position.x, m_position.y - 1), GameManager.s_gameSettings.holeSprite);
+    }
+
     // helper to pool displays
     public void Pool () {
 

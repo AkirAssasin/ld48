@@ -183,7 +183,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: dc2105d85c34c2749b79187a11f73763, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -242,6 +242,7 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
+  - component: {fileID: 519420030}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -257,6 +258,24 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
+--- !u!114 &519420030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 853fa9bc2d89a314ba3df83fd037a0a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_followTarget: {fileID: 3588049}
+  m_zPosition: -10
+  m_positionLerpRate: 5
+  m_maxTilt: 1
+  m_tiltMinDistance: 0
+  m_tiltMaxDistance: 2
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -267,7 +286,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.14150941, g: 0.14150941, b: 0.14150941, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -359,4 +378,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_gameSettings: {fileID: 11400000, guid: bb1800c9b2d51e24598c284b25733f28, type: 2}
   m_player: {fileID: 3588051}
-  t_corridorLength: 5
+  m_corridorLength: 11
