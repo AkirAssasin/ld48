@@ -9,6 +9,10 @@ public class EnemyActorController : PoolableObject<EnemyActorController>, IActor
     // reference to self
     protected override EnemyActorController self => this;
 
+    // public settings
+    [Header("AI")]
+    public float m_reactionSpeed;
+
     // reference to game manager
     GameManager m_gameManager;
 
@@ -21,6 +25,9 @@ public class EnemyActorController : PoolableObject<EnemyActorController>, IActor
     System.Action m_currentStateInit;
     System.Action m_currentStateUpdate;
     System.Action m_currentStateExit;
+
+    // fake reaction speed
+    float m_reactionProcessing;
 
     // components
     Actor m_actor;
@@ -43,6 +50,8 @@ public class EnemyActorController : PoolableObject<EnemyActorController>, IActor
         m_currentState = EnemyAIState.Restart;
         m_nextState = EnemyAIState.Idle;
         m_currentStateInit = null;
+        UpdateAIState();
+        m_reactionProcessing = 0f;
     }
 
     // state update function
@@ -56,6 +65,7 @@ public class EnemyActorController : PoolableObject<EnemyActorController>, IActor
 
         // switch state
         if (m_nextState != EnemyAIState.Restart) m_currentState = m_nextState;
+        m_nextState = m_currentState;
         switch (m_currentState) {
 
             case EnemyAIState.Idle:
@@ -81,6 +91,7 @@ public class EnemyActorController : PoolableObject<EnemyActorController>, IActor
 
         // call state begin
         m_currentStateInit?.Invoke();
+        m_reactionProcessing = m_reactionSpeed;
     }
 
     // update function
@@ -92,8 +103,10 @@ public class EnemyActorController : PoolableObject<EnemyActorController>, IActor
         // update AI state
         UpdateAIState();
 
-        // call state update
-        m_currentStateUpdate?.Invoke();
+        // update reaction speed
+        if (m_reactionProcessing > 0f) {
+            m_reactionProcessing -= Time.deltaTime;
+        } else m_currentStateUpdate?.Invoke();
     }
 
     // idle state: update
