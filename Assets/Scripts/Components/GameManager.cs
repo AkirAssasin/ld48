@@ -9,12 +9,16 @@ public class GameManager : MonoBehaviour {
     public static GameSettings s_gameSettings;
 
     // game settings to use
+    [Header("Settings")]
     public GameSettings m_gameSettings;
 
     // reference to player controller
+    [Header("Player")]
     public PlayerActorController m_player;
 
     // list of corridors
+    [Header("Corridors")]
+    public float m_paddingBetweenCorridors;
     public int m_corridorLength;
     List<Corridor> m_corridors;
 
@@ -38,7 +42,7 @@ public class GameManager : MonoBehaviour {
         while (depth >= m_corridors.Count) {
             
             // compute position
-            Vector2 pos = new Vector2(0, depth * -2f);
+            Vector2 pos = new Vector2(0, (-1f - m_paddingBetweenCorridors) * m_corridors.Count);
             m_corridors.Add(new Corridor(pos, m_corridorLength));
         }
         return m_corridors[depth];

@@ -11,8 +11,15 @@ public interface IActorController {
 // actor component - can be controlled by IActorController
 public class Actor : MonoBehaviour {
 
+    // public settings
+    [Header("Projectile")]
+    public float m_projectileSpread;
+    
     // controller
     IActorController m_controller;
+
+    // current facing direction
+    bool m_facingRight;
 
     // game manager
     GameManager m_gameManager;
@@ -44,6 +51,7 @@ public class Actor : MonoBehaviour {
         // enter corridor
         m_currentDepth = depth;
         EnterCorridor(m_gameManager.GetCorridor(m_currentDepth), cell);
+        m_facingRight = true;
 
         // initialize renderer
         m_renderer.enabled = true;
@@ -80,7 +88,19 @@ public class Actor : MonoBehaviour {
         if (result < 0 || result >= m_currentCorridor.Length) return;
 
         // move (no animation yet)
+        m_facingRight = (dx > 0);
         SetToCell(result);
+    }
+
+    // helper to fire projectile
+    public void FireProjectile () {
+
+        // compute angle
+        float radian = (m_facingRight ? 0 : Mathf.PI) + (Random.value - 0.5f) * m_projectileSpread * Mathf.Deg2Rad;
+
+        // spawn projectile
+        Projectile projectile = Projectile.GetFromPool(GameManager.s_gameSettings.projectilePrefab);
+        projectile.Initialize(m_currentCorridor, m_currentCorridor.GetCellPosition(m_currentCell), radian);
     }
 
     // helper to go deeper
@@ -91,6 +111,21 @@ public class Actor : MonoBehaviour {
 
         // enter next corridor
         EnterCorridor(m_gameManager.GetCorridor(++m_currentDepth), m_currentCell);
+    }
+
+    // helper to go up
+    public void Ascend () {
+
+        // cannot go up if depth is highest
+        if (m_currentDepth == 0) return;
+
+        // can only go up if there is hole
+        Corridor topCorridor = m_gameManager.GetCorridor(m_currentDepth - 1);
+        if (!topCorridor.m_cells[m_currentCell].m_hasHole) return;
+
+        // ok climb up
+        EnterCorridor(topCorridor, m_currentCell);
+        --m_currentDepth;
     }
 
     // pool function

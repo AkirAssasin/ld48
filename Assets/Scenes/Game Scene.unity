@@ -183,7 +183,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: dc2105d85c34c2749b79187a11f73763, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.019607844, g: 0.019607844, b: 0.019607844, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -219,6 +219,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6abdbda1a347e4742816bf3a35f87696, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_projectileSpread: 5
 --- !u!114 &3588051
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -286,7 +287,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.14150941, g: 0.14150941, b: 0.14150941, a: 0}
+  m_BackGroundColor: {r: 0.019607844, g: 0.019607844, b: 0.019607844, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -378,4 +379,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_gameSettings: {fileID: 11400000, guid: bb1800c9b2d51e24598c284b25733f28, type: 2}
   m_player: {fileID: 3588051}
+  m_paddingBetweenCorridors: 0.2
   m_corridorLength: 11

@@ -22,6 +22,8 @@ public class PlayerActorController : MonoBehaviour, IActorController {
         if (Input.GetKeyDown(KeyCode.LeftArrow)) m_actor.Move(-1);
         if (Input.GetKeyDown(KeyCode.RightArrow)) m_actor.Move(1);
         if (Input.GetKeyDown(KeyCode.DownArrow)) m_actor.Descend();
+        if (Input.GetKeyDown(KeyCode.UpArrow)) m_actor.Ascend();
+        if (Input.GetKeyDown(KeyCode.Space)) m_actor.FireProjectile();
     }
 
     // cannot pool player
