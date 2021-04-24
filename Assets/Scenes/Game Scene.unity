@@ -229,8 +229,8 @@ MonoBehaviour:
   m_muzzleFlashDuration: 0.1
   m_yOffset: -0.1
   m_dyingDuration: 0.1
-  m_deathFadeDuration: 5
-  m_deathOffsetStrength: 0
+  m_deathFadeDuration: 1.5
+  m_deathOffsetStrength: 5
   m_faceDirectionDuration: 0.15
   m_moveDuration: 0.15
   m_descendDuration: 0.3

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerActorController : MonoBehaviour, IActorController {
     
@@ -21,13 +22,15 @@ public class PlayerActorController : MonoBehaviour, IActorController {
         // temporary
         if (Input.GetKey(KeyCode.LeftArrow)) m_actor.Move(-1);
         if (Input.GetKey(KeyCode.RightArrow)) m_actor.Move(1);
-        if (Input.GetKeyDown(KeyCode.DownArrow)) m_actor.Descend();
-        if (Input.GetKeyDown(KeyCode.UpArrow)) m_actor.Ascend();
+        if (Input.GetKey(KeyCode.DownArrow)) m_actor.Descend();
+        if (Input.GetKey(KeyCode.UpArrow)) m_actor.Ascend();
         if (Input.GetKey(KeyCode.Space)) m_actor.FireProjectile();
     }
 
     // cannot pool player
     public bool Pool () {
-        throw new System.InvalidOperationException("Cannot pool player actor!");
+        
+        SceneManager.LoadScene(0);
+        return true;
     }
 }

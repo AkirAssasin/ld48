@@ -135,19 +135,10 @@ public class Projectile : PoolableObject<Projectile> {
                     max = m_currentCell - 1;
                 }
 
-                // check all actors in the corridor
-                for (int i = 0; i < m_corridor.m_actors.Count; ++i) {
-
-                    // get actor that is not ignored
-                    Actor actor = m_corridor.m_actors[i];
-                    if (actor == m_actorToIgnore) continue;
-
-                    // hit the actor
-                    if (actor.currentCell >= min && actor.currentCell <= max) actor.HitByProjectile(this);
-                }
+                // hit actors in corridor
+                m_corridor.DoToActors(m_actorToIgnore, min, max, x => x.HitByProjectile(this));
 
                 // update current cell
-                Debug.Log("from " + m_currentCell + " to " + newCell);
                 m_currentCell = newCell;
             }
         }

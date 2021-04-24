@@ -110,19 +110,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_color: {r: 0.019607844, g: 0.019607844, b: 0.019607844, a: 1}
-  m_projectileSpread: 5
-  m_gunPosition: {x: 0, y: 0}
-  m_gunFireDuration: 0
-  m_gunCooldownDuration: 0
-  m_muzzleFlashScale: {x: 0, y: 0}
-  m_muzzleFlashSpread: 0
-  m_muzzleFlashDuration: 0
+  m_projectileSpread: 3
+  m_gunPosition: {x: 0.31, y: 0.34}
+  m_gunFireDuration: 0.1
+  m_gunCooldownDuration: 0.2
+  m_muzzleFlashScale: {x: 0.06, y: 0.25}
+  m_muzzleFlashSpread: 45
+  m_muzzleFlashDuration: 0.1
   m_yOffset: -0.1
   m_dyingDuration: 0.1
   m_deathFadeDuration: 5
   m_deathOffsetStrength: 5
   m_faceDirectionDuration: 0.15
   m_moveDuration: 0.15
+  m_descendDuration: 0.3
   m_moveCurve:
     serializedVersion: 2
     m_Curve:
@@ -143,6 +144,54 @@ MonoBehaviour:
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  m_descendCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: -1.051527
+      outSlope: -1.051527
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.10833335
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  m_ascendCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: -1.051527
+      outSlope: -1.051527
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.10833335
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2

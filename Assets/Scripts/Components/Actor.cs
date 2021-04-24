@@ -12,7 +12,10 @@ public interface IActorController {
 public class Actor : MonoBehaviour {
 
     // public getters
-    public int currentCell => m_currentCell;
+    public int CurrentCell => m_currentCell;
+    public int CurrentDepth => m_currentDepth;
+    public bool IsDead => m_isDead;
+    public bool FacingRight => m_facingRight;
 
     // public settings
     [Header("Appearance")]
@@ -64,6 +67,10 @@ public class Actor : MonoBehaviour {
     Corridor m_currentCorridor;
     int m_currentCell;
 
+    // immunity
+    bool m_immuneToMelee;
+    bool m_immuneToProjectile;
+
     // component references
     Transform m_transform;
     SpriteRenderer m_renderer;
@@ -87,8 +94,11 @@ public class Actor : MonoBehaviour {
         m_currentDepth = depth;
         EnterCorridor(m_gameManager.GetCorridor(m_currentDepth), cell);
 
-        // not dead anymore
+        // reset values
+        m_gunCooldown = 0f;
         m_isDead = false;
+        m_immuneToMelee = false;
+        m_immuneToProjectile = false;
 
         // face random direction
         m_facingRight = Random.value > 0.5f;
@@ -147,6 +157,9 @@ public class Actor : MonoBehaviour {
     // move action
     IEnumerator MoveAction (int targetCell) {
 
+        // immune to melee
+        m_immuneToMelee = true;
+
         // get end position
         Vector2 start = m_transform.localPosition;
         Vector2 end = m_currentCorridor.GetCellPosition(targetCell) + new Vector2(0, m_yOffset);
@@ -157,6 +170,9 @@ public class Actor : MonoBehaviour {
             m_transform.localPosition = Vector2.Lerp(start, end, m_moveCurve.Evaluate(nt));
         });
         SetToCell(targetCell);
+
+        // un-immune
+        m_immuneToMelee = false;
     }
 
     // helper to move in corridor
@@ -177,11 +193,7 @@ public class Actor : MonoBehaviour {
         } else {
             
             // kill the guy there
-            for (int i = 0; i < m_currentCorridor.m_actors.Count; ++i) {
-
-                Actor actor = m_currentCorridor.m_actors[i];
-                if (actor.currentCell == result) actor.Kill(dx);
-            }
+            m_currentCorridor.DoToActors(this, result, result, x => x.HitByMelee(dx));
 
             // move
             m_currentAction = m_currentAction.StartCoroutine(this, MoveAction(result));
@@ -239,6 +251,10 @@ public class Actor : MonoBehaviour {
     // descend action
     IEnumerator DescendAction (Corridor nextCorridor) {
 
+        // immune to melee and projectile
+        m_immuneToMelee = true;
+        m_immuneToProjectile = true;
+
         // set sprite
         m_renderer.sprite = GameManager.s_gameSettings.actorFallSprite;
 
@@ -257,20 +273,21 @@ public class Actor : MonoBehaviour {
             // do drop kick
             if (!dropKicked && nt > 0.5f) {
 
-                for (int i = 0; i < nextCorridor.m_actors.Count; ++i) {
-
-                    Actor actor = nextCorridor.m_actors[i];
-                    if (actor.currentCell == m_currentCell) actor.Kill(0f);
-                }
+                nextCorridor.DoToActors(this, m_currentCell, m_currentCell, x => x.HitByMelee(0f));
                 dropKicked = true;
             }
         });
 
         // enter next corridor
         EnterCorridor(nextCorridor, m_currentCell);
+        ++m_currentDepth;
 
         // reset sprite
         m_renderer.sprite = GameManager.s_gameSettings.actorAimSprite;
+
+        // un-immune to melee and projectile
+        m_immuneToMelee = false;
+        m_immuneToProjectile = false;
     }
 
     // helper to go deeper
@@ -283,7 +300,7 @@ public class Actor : MonoBehaviour {
         m_currentCorridor.MakeHole(m_currentCell);
 
         // get next corridor
-        Corridor nextCorridor = m_gameManager.GetCorridor(++m_currentDepth);
+        Corridor nextCorridor = m_gameManager.GetCorridor(m_currentDepth + 1);
 
         // begin descend action
         m_currentAction = m_currentAction.StartCoroutine(this, DescendAction(nextCorridor));
@@ -291,6 +308,10 @@ public class Actor : MonoBehaviour {
 
     // ascend action
     IEnumerator AscendAction (Corridor nextCorridor) {
+
+        // immune to melee and projectile
+        m_immuneToMelee = true;
+        m_immuneToProjectile = true;
 
         // set sprite
         m_renderer.sprite = GameManager.s_gameSettings.actorFallSprite;
@@ -310,20 +331,21 @@ public class Actor : MonoBehaviour {
             // do uppercut
             if (!uppercut && nt > 0.5f) {
 
-                for (int i = 0; i < nextCorridor.m_actors.Count; ++i) {
-
-                    Actor actor = nextCorridor.m_actors[i];
-                    if (actor.currentCell == m_currentCell) actor.Kill(0f);
-                }
+                nextCorridor.DoToActors(this, m_currentCell, m_currentCell, x => x.HitByMelee(0f));
                 uppercut = true;
             }
         });
 
         // enter next corridor
         EnterCorridor(nextCorridor, m_currentCell);
+        --m_currentDepth;
 
         // reset sprite
         m_renderer.sprite = GameManager.s_gameSettings.actorAimSprite;
+
+        // un-immune to melee and projectile
+        m_immuneToMelee = false;
+        m_immuneToProjectile = false;
     }
 
     // helper to go up
@@ -340,7 +362,6 @@ public class Actor : MonoBehaviour {
         if (!topCorridor.m_cells[m_currentCell].m_hasHole) return;
 
         // ok climb up
-        --m_currentDepth;
         m_currentAction = m_currentAction.StartCoroutine(this, AscendAction(topCorridor));
     }
 
@@ -375,9 +396,22 @@ public class Actor : MonoBehaviour {
 
     // hit by projectile
     public void HitByProjectile (Projectile projectile) {
+        
+        // check if immune
+        if (m_immuneToProjectile) return;
 
         // die instantly for now
         Kill(projectile.velocity.x);
+    }
+
+    // hit by melee
+    public void HitByMelee (float offset) {
+        
+        // check if immune
+        if (m_immuneToMelee) return;
+
+        // die instantly for now
+        Kill(offset);
     }
 
     // people die when they are killed
@@ -389,6 +423,7 @@ public class Actor : MonoBehaviour {
 
         // force death action
         m_currentAction?.Stop();
+        m_transform.localEulerAngles = Vector3.zero;
         m_currentAction = m_currentAction.StartCoroutine(this, DeathAction(offset * m_deathOffsetStrength));
     }
 
