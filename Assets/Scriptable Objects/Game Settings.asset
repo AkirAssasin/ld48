@@ -17,3 +17,7 @@ MonoBehaviour:
   enemyPrefab: {fileID: 9051097910050716241, guid: 30193dd1dcc3cd14685a92483547b5dd, type: 3}
   wallNormalSprite: {fileID: 21300000, guid: 54864299e716281468aa4b8c655c6ecf, type: 3}
   holeSprite: {fileID: 21300000, guid: 54864299e716281468aa4b8c655c6ecf, type: 3}
+  actorAimSprite: {fileID: 21300000, guid: 965c2610cc1819842ae318658a3dd1c9, type: 3}
+  actorRecoilSprite: {fileID: 21300000, guid: 61ae3d3284863ba438b564de1834bd58, type: 3}
+  actorDyingSprite: {fileID: 21300000, guid: 86e7a7d69c7193a45b66061e6797bc2b, type: 3}
+  actorDeadSprite: {fileID: 21300000, guid: 6c3570c897c0d2b46b5454b7cd45e8ff, type: 3}

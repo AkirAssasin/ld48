@@ -13,4 +13,10 @@ public class GameSettings : ScriptableObject {
     [Header("Wall Sprites")]
     public Sprite wallNormalSprite; 
     public Sprite holeSprite;
+
+    [Header("Actor Sprites")]
+    public Sprite actorAimSprite;
+    public Sprite actorRecoilSprite;
+    public Sprite actorDyingSprite;
+    public Sprite actorDeadSprite;
 }
