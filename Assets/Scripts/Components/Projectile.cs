@@ -5,6 +5,9 @@ using UnityEngine;
 // poolable component controlling projectile
 public class Projectile : PoolableObject<Projectile> {
 
+    // public getters
+    public Vector2 velocity => m_unitVelocity;
+
     // self-reference for pooling
     protected override Projectile self => this;
 

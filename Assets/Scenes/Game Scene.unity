@@ -220,10 +220,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_color: {r: 0.019607844, g: 0.019607844, b: 0.019607844, a: 1}
-  m_projectileSpread: 5
+  m_projectileSpread: 3
   m_gunPosition: {x: 0.31, y: 0.34}
   m_gunFireDuration: 0.1
   m_gunCooldownDuration: 0.2
+  m_muzzleFlashScale: {x: 0.06, y: 0.25}
+  m_muzzleFlashSpread: 45
+  m_muzzleFlashDuration: 0.1
   m_yOffset: -0.1
   m_dyingDuration: 0.1
   m_deathFadeDuration: 5

@@ -24,12 +24,18 @@ public class Actor : MonoBehaviour {
     public float m_gunFireDuration;
     public float m_gunCooldownDuration;
 
+    [Header("Particle")]
+    public Vector2 m_muzzleFlashScale;
+    public float m_muzzleFlashSpread;
+    public float m_muzzleFlashDuration;
+
     [Header("Offset")]
     public float m_yOffset;
 
     [Header("Death")]
     public float m_dyingDuration;
     public float m_deathFadeDuration;
+    public float m_deathOffsetStrength;
 
     [Header("Movement")]
     public float m_faceDirectionDuration;
@@ -165,7 +171,18 @@ public class Actor : MonoBehaviour {
             
             m_currentAction = m_currentAction.StartCoroutine(this, FaceDirectionAction(dx > 0));
 
-        } else m_currentAction = m_currentAction.StartCoroutine(this, MoveAction(result));
+        } else {
+            
+            // kill the guy there
+            for (int i = 0; i < m_currentCorridor.m_actors.Count; ++i) {
+
+                Actor actor = m_currentCorridor.m_actors[i];
+                if (actor.currentCell == result) actor.Kill(dx);
+            }
+
+            // move
+            m_currentAction = m_currentAction.StartCoroutine(this, MoveAction(result));
+        }
     }
 
     // projectile fire action
@@ -179,12 +196,19 @@ public class Actor : MonoBehaviour {
         
         // compute position
         Vector2 position = m_currentCorridor.GetCellPosition(m_currentCell);
-        position.y += m_gunPosition.y + m_yOffset;
-        position.x += m_facingRight ? m_gunPosition.x : -m_gunPosition.x;
+        Vector2 delta = new Vector2(m_facingRight ? m_gunPosition.x : -m_gunPosition.x, m_gunPosition.y + m_yOffset);
+        position += delta;
 
         // spawn projectile
         Projectile projectile = Projectile.GetFromPool(GameManager.s_gameSettings.projectilePrefab);
         projectile.Initialize(m_currentCorridor, this, position, radian);
+
+        // spawn muzzle flashes
+        Vector2 globalPos = transform.position;
+        globalPos.x += delta.x;
+        globalPos.y += delta.y - m_yOffset;
+        SpawnMuzzleFlash(globalPos, radian * Mathf.Rad2Deg);
+        SpawnMuzzleFlash(globalPos, radian * Mathf.Rad2Deg);
 
         // wait
         yield return new WaitForSeconds(m_gunFireDuration);
@@ -192,6 +216,13 @@ public class Actor : MonoBehaviour {
         // set back to aiming sprite
         m_renderer.sprite = GameManager.s_gameSettings.actorAimSprite;
         m_gunCooldown = m_gunCooldownDuration;
+    }
+
+    // helper to spawn muzzle flash
+    void SpawnMuzzleFlash (Vector2 position, float angle) {
+
+        Particle p = Particle.GetFromPool(GameManager.s_gameSettings.particlePrefab);
+        p.Initialize(position, m_muzzleFlashScale, angle + (Random.value - 0.5f) * m_muzzleFlashSpread, Vector2.zero, m_muzzleFlashDuration);
     }
 
     // helper to fire projectile
@@ -218,7 +249,7 @@ public class Actor : MonoBehaviour {
         for (int i = 0; i < nextCorridor.m_actors.Count; ++i) {
 
             Actor actor = nextCorridor.m_actors[i];
-            if (actor.currentCell == m_currentCell) actor.Kill();
+            if (actor.currentCell == m_currentCell) actor.Kill(0f);
         }
 
         // enter next corridor
@@ -244,13 +275,18 @@ public class Actor : MonoBehaviour {
     }
 
     // death action
-    IEnumerator DeathAction () {
+    IEnumerator DeathAction (float offset) {
 
         // set dying sprite
         m_renderer.sprite = GameManager.s_gameSettings.actorDyingSprite;
 
-        // wait
-        yield return new WaitForSeconds(m_dyingDuration);
+        // offset
+        Vector2 pos = m_transform.position;
+        yield return new RunForDuration(m_dyingDuration, nt => {
+
+            pos.x += offset * nt * Time.deltaTime;
+            m_transform.position = pos;
+        });
 
         // set to dead sprite
         m_renderer.sprite = GameManager.s_gameSettings.actorDeadSprite;
@@ -271,11 +307,11 @@ public class Actor : MonoBehaviour {
     public void HitByProjectile (Projectile projectile) {
 
         // die instantly for now
-        Kill();
+        Kill(projectile.velocity.x);
     }
 
     // people die when they are killed
-    public void Kill () {
+    public void Kill (float offset) {
 
         // cannot die if dead
         if (m_isDead) return;
@@ -283,7 +319,7 @@ public class Actor : MonoBehaviour {
 
         // force death action
         m_currentAction?.Stop();
-        m_currentAction = m_currentAction.StartCoroutine(this, DeathAction());
+        m_currentAction = m_currentAction.StartCoroutine(this, DeathAction(offset * m_deathOffsetStrength));
     }
 
     // pool function
