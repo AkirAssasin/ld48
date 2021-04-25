@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AmbushEnemyInfo {
 
@@ -54,6 +55,16 @@ public class GameManager : MonoBehaviour {
     // score
     [Header("Score")]
     public Transform m_scoreTextTransform;
+
+    // lose state
+    [Header("Lose State")]
+    public Transform m_retryPromptTransform;
+    public float m_loseTransitionDuration;
+    public CameraController m_cameraController;
+
+    // lose state
+    bool m_isRetry;
+    MCoroutine m_loseCoroutine;
 
     // score
     TMPro.TextMeshPro m_scoreTextMesh;
@@ -114,6 +125,39 @@ public class GameManager : MonoBehaviour {
             SetBlackScreenPosition();
         }
 
+        // do game update if not retry
+        if (m_isRetry) {
+
+            // any key to retry
+            if (Input.anyKeyDown && m_loseCoroutine?.running != true) {
+                m_loseCoroutine = m_loseCoroutine.StartCoroutine(this, LoseCoroutine());
+            }
+
+        } else GameUpdate(dt);
+    }
+
+    IEnumerator LoseCoroutine () {
+
+        // wait for black screen, just in case
+        while (m_blackScreenProgress > 0f) yield return null;
+
+        // setup black screen
+        float blackScreenStart = m_topCorridorDepth * (-1f - s_gameSettings.paddingBetweenCorridors) + 0.5f;
+        float totalHeight = m_corridors.Count * (1f + s_gameSettings.paddingBetweenCorridors);
+
+        // run animation
+        yield return new RunForDuration(m_loseTransitionDuration, nt => { 
+            
+            float currentHeight = totalHeight * m_blackScreenCurve.Evaluate(nt);
+            m_blackScreenTransform.position = new Vector3(0f, blackScreenStart - currentHeight / 2);
+            m_blackScreenTransform.localScale = new Vector3(m_corridorLength, currentHeight, 1f);
+        });
+        
+        SceneManager.LoadScene(0);
+    }
+
+    void GameUpdate (float dt) {
+
         // delete corridors above max
         int requiredTopDepth = m_playerActor.CurrentDepth - m_maxCorridorsAbove;
         if (m_topCorridorDepth < requiredTopDepth) {
@@ -161,6 +205,17 @@ public class GameManager : MonoBehaviour {
             if (m_currentBestDepth > s_bestScore) s_bestScore = m_currentBestDepth;
             UpdateScore();
         }
+    }
+
+    // set lose state
+    public void SetLoseState () {
+
+        // cannot lose while losing
+        if (m_isRetry) return;
+        m_isRetry = true;
+
+        m_cameraController.m_positionXStrength = 0f;
+        m_retryPromptTransform.position = new Vector3(0f, (-1f - s_gameSettings.paddingBetweenCorridors) * m_playerActor.CurrentDepth);
     }
 
     // update score

@@ -20,6 +20,12 @@ public class AngelWing : PoolableObject<AngelWing> {
     public float m_baseLerpRate;
     public float m_destroyParticleLife;
 
+    [Header("Appearance")]
+    public Color m_color;
+
+    [Header("Beeping")]
+    public float m_minimumBeepInterval;
+
     // anchoring info
     Vector2 m_anchorPosition;
     Actor m_anchorActor;
@@ -36,6 +42,12 @@ public class AngelWing : PoolableObject<AngelWing> {
 
     // actual lerp speed
     float m_lerpRate;
+
+    // oscillation
+    float m_oscillator;
+    bool m_oscillateState;
+    float m_oscillateProgress;
+    float m_timeSinceBeep;
 
     // component references
     Transform m_transform;
@@ -73,6 +85,7 @@ public class AngelWing : PoolableObject<AngelWing> {
         m_lerpRate = m_baseLerpRate * param.m_lerpScale;
 
         // initialize sprite
+        SetOscillator(1f);
         m_renderer.enabled = true;
     }
 
@@ -104,8 +117,10 @@ public class AngelWing : PoolableObject<AngelWing> {
         if (m_anchorActor.IsDead) {
 
             // spawn particles
-            Particle p = Particle.GetFromPool(GameManager.s_gameSettings.particlePrefab);
-            p.Initialize(m_renderer.sprite, m_position, m_scale, m_trueAngle, Vector2.zero, m_destroyParticleLife);
+            if (m_oscillator > 0f) {
+                Particle p = Particle.GetFromPool(GameManager.s_gameSettings.particlePrefab);
+                p.Initialize(m_renderer.sprite, m_position, m_scale, m_trueAngle, Vector2.zero, m_destroyParticleLife);
+            }
 
             Pool();
             return;
@@ -113,13 +128,52 @@ public class AngelWing : PoolableObject<AngelWing> {
 
         // get delta time
         float dt = Time.deltaTime;
+        
+        // update beep
+        if (m_timeSinceBeep > 0f) m_timeSinceBeep -= dt;
 
         // lerp to actor's position
         m_position = Vector2.Lerp(m_position, GetFinalPosition(), dt * m_lerpRate);
         m_transform.position = m_position;
 
+        // update oscillator
+        if (m_oscillator > 0f && m_oscillator < 1f) {
+
+            m_oscillateProgress += dt;
+            if (m_oscillateProgress > m_oscillator) {
+
+                // oscillate color
+                m_oscillateProgress -= m_oscillator;
+                m_oscillateState = !m_oscillateState;
+                m_renderer.color = m_oscillateState ? m_color : Color.clear;
+
+                // do beeping
+                if (m_oscillateState && m_timeSinceBeep <= 0f) {
+
+                    m_timeSinceBeep = m_minimumBeepInterval;
+                    GameManager.s_gameSettings.beepSFX.Play();
+                }
+            }
+        }
+
         // update angle
         UpdateAngle();
+    }
+
+    // set oscillator
+    public void SetOscillator (float oscillator) {
+
+        m_oscillator = oscillator;
+        if (m_oscillator <= 0f) {
+            
+            m_renderer.color = Color.clear;
+            m_oscillateState = false;
+        
+        } else if (m_oscillator >= 1f) {
+            
+            m_renderer.color = m_color;
+            m_oscillateState = true;
+        }
     }
 
     // pool function

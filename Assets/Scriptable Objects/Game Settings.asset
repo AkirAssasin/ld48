@@ -49,3 +49,6 @@ MonoBehaviour:
   appearSFX:
     m_clip: {fileID: 8300000, guid: b8c1f43ac77332240a1baa48d9e21f17, type: 3}
     m_volume: 1
+  beepSFX:
+    m_clip: {fileID: 8300000, guid: bea6d47f815eb564b861b870f9169338, type: 3}
+    m_volume: 0.2

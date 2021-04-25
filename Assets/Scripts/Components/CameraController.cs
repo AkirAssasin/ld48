@@ -12,6 +12,7 @@ public class CameraController : MonoBehaviour {
     public Transform m_followTarget;
     public float m_zPosition;
     public float m_positionLerpRate;
+    public float m_positionXStrength;
 
     [Header("Tilting")]
     public float m_maxTilt;
@@ -48,7 +49,7 @@ public class CameraController : MonoBehaviour {
 
         // get target position
         Vector2 targetPosition = m_followTarget.position;
-        targetPosition.x *= 0.5f;
+        targetPosition.x *= m_positionXStrength;
 
         // tilt to target
         float delta = targetPosition.x - m_position.x;
