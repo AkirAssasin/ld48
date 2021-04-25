@@ -21,6 +21,9 @@ public class AmbushEnemyInfo {
 // class managing game
 public class GameManager : MonoBehaviour {
 
+    // best score, static because I'm lazy
+    public static int s_bestScore = 0;
+
     // public getters
     public int TopCorridorDepth => m_topCorridorDepth;
 
@@ -47,6 +50,14 @@ public class GameManager : MonoBehaviour {
     public Transform m_blackScreenTransform;
     public float m_blackScreenDuration;
     public AnimationCurve m_blackScreenCurve;
+
+    // score
+    [Header("Score")]
+    public Transform m_scoreTextTransform;
+
+    // score
+    TMPro.TextMeshPro m_scoreTextMesh;
+    int m_currentBestDepth;
 
     // black screen progress
     float m_blackScreenProgress;
@@ -79,6 +90,11 @@ public class GameManager : MonoBehaviour {
 
         // hide black screen
         m_blackScreenTransform.localScale = Vector3.zero;
+
+        // setup score
+        m_scoreTextMesh = m_scoreTextTransform.GetComponent<TMPro.TextMeshPro>();
+        m_currentBestDepth = 0;
+        UpdateScore();
 
         // initialize player
         m_player.Initialize(this, 0, m_corridorLength / 2);
@@ -138,6 +154,20 @@ public class GameManager : MonoBehaviour {
 
             } else if (m_playerActor.CurrentDepth > ambush.m_depth) ambush.m_active = true;
         }
+
+        // update score
+        if (m_playerActor.CurrentDepth > m_currentBestDepth) {
+            m_currentBestDepth = m_playerActor.CurrentDepth;
+            if (m_currentBestDepth > s_bestScore) s_bestScore = m_currentBestDepth;
+            UpdateScore();
+        }
+    }
+
+    // update score
+    void UpdateScore () {
+
+        m_scoreTextTransform.position = new Vector3(m_corridorLength * 0.5f, (-1f - s_gameSettings.paddingBetweenCorridors) * m_currentBestDepth);
+        m_scoreTextMesh.text = (m_currentBestDepth == 0 ? s_bestScore : m_currentBestDepth).ToString("00");
     }
 
     // get corridor, or make if it doesn't exist
