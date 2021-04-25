@@ -6,6 +6,9 @@ public enum EnemyAIState { Restart, Idle, MoveToPlayer, FireAtPlayer };
 
 public class EnemyActorController : PoolableObject<EnemyActorController>, IActorController {
 
+    // actor label
+    public ActorLabel Label => ActorLabel.Enemy;
+
     // reference to self
     protected override EnemyActorController self => this;
 
@@ -162,9 +165,49 @@ public class EnemyActorController : PoolableObject<EnemyActorController>, IActor
 
             // descend or ascend depending
             moveToPlayerPreviousDepth = m_actor.CurrentDepth;
-            if (moveToPlayerDescend) m_actor.Descend(); else m_actor.Ascend();
+            if (moveToPlayerDescend) {
+                
+                // go if no friend blocking
+                if (!FriendlyInPosition(m_gameManager.GetCorridor(m_actor.CurrentDepth + 1), m_actor.CurrentCell)) {
+                    m_actor.Descend(); 
+                }
+
+            } else {
+
+                // go if no friend blocking
+                if (!FriendlyInPosition(m_gameManager.GetCorridor(m_actor.CurrentDepth - 1), m_actor.CurrentCell)) {
+                    m_actor.Ascend(); 
+                }
+            }
         
-        } else m_actor.Move(m_actor.CurrentCell < moveToPlayerCell ? 1 : -1);
+        } else {
+            
+            // decide which direction to go
+            int dir = m_actor.CurrentCell < moveToPlayerCell ? 1 : -1;
+
+            // go if no friend blocking
+            if (!FriendlyInPosition(m_actor.CurrentCorridor, m_actor.CurrentCell + dir)) {
+                m_actor.Move(dir);
+            }
+        }
+    }
+
+    // helper to check friendly melee
+    bool FriendlyInPosition (Corridor corridor, int targetCell) {
+
+        // check all actors in corridor
+        for (int i = 0; i < corridor.m_actors.Count; ++i) {
+
+            // ignore self or dead
+            Actor other = corridor.m_actors[i];
+            if (other == m_actor || other.IsDead) continue;
+
+            // check position
+            if (other.Label == ActorLabel.Enemy && other.CurrentCell == targetCell) return true;
+        }
+
+        // no friend in position
+        return false;
     }
 
     // helper function to "pathfind"
@@ -212,11 +255,30 @@ public class EnemyActorController : PoolableObject<EnemyActorController>, IActor
             // turn to player
             m_actor.Move(shouldFaceRight ? 1 : -1);
         
-        } else {
+        } else if (!FriendlyInLineOfFire()) {
 
             // fire at player
             m_actor.FireProjectile();
         }
+    }
+
+    // helper to check friendly fire
+    bool FriendlyInLineOfFire () {
+
+        // check all actors in corridor
+        for (int i = 0; i < m_actor.CurrentCorridor.m_actors.Count; ++i) {
+
+            // ignore self or dead
+            Actor other = m_actor.CurrentCorridor.m_actors[i];
+            if (other == m_actor || other.IsDead) continue;
+
+            // check line of fire
+            bool inLineOfFire = ((other.CurrentCell > m_actor.CurrentCell) == m_actor.FacingRight);
+            if (inLineOfFire && other.Label == ActorLabel.Enemy) return true;
+        }
+
+        // no friendly fire
+        return false;
     }
 
     // pool function

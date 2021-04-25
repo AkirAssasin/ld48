@@ -2,9 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// actor labels
+public enum ActorLabel { Enemy, Player };
+
 // interface for a component that controls an actor
 public interface IActorController {
 
+    ActorLabel Label { get; }
     public bool Pool ();
 }
 
@@ -14,8 +18,10 @@ public class Actor : MonoBehaviour {
     // public getters
     public int CurrentCell => m_currentCell;
     public int CurrentDepth => m_currentDepth;
+    public Corridor CurrentCorridor => m_currentCorridor;
     public bool IsDead => m_isDead;
     public bool FacingRight => m_facingRight;
+    public ActorLabel Label => m_controller.Label;
 
     // public settings
     [Header("Appearance")]

@@ -97,7 +97,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inPool: 1
-  m_reactionSpeed: 0.2
+  m_reactionSpeed: 0.15
 --- !u!114 &9051097910050716242
 MonoBehaviour:
   m_ObjectHideFlags: 0

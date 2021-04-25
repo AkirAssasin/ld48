@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class PlayerActorController : MonoBehaviour, IActorController {
     
+    // actor label
+    public ActorLabel Label => ActorLabel.Player;
+
     // components
     Actor m_actor;
 

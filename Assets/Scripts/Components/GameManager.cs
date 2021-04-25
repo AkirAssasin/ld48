@@ -47,15 +47,36 @@ public class GameManager : MonoBehaviour {
             // create corridor
             Corridor newCorridor = new Corridor(pos, m_corridorLength);
             m_corridors.Add(newCorridor);
-
-            // populate with one enemy
-            if (currentDepth > 0) {
-
-                EnemyActorController enemy = EnemyActorController.GetFromPool(s_gameSettings.enemyPrefab);
-                enemy.Initialize(this, currentDepth, Random.Range(0, m_corridorLength));
-            }
+            GenerateCorridorContent(newCorridor, currentDepth);
         }
 
         return m_corridors[depth];
+    }
+
+    // create a new corridor
+    void GenerateCorridorContent (Corridor corridor, int depth) {
+
+        // populate with enemies
+        if (depth > 0) {
+
+            // generate list of cells
+            List<int> unoccupiedCells = new List<int>();
+            for (int i = 0; i < corridor.Length; ++i) unoccupiedCells.Add(i);
+
+            // how many enemies to add
+            int enemyCount = Mathf.Clamp(1 + depth / 4, 1, 3);
+            for (int i = 0; i < enemyCount; ++i) {
+
+                // choose random cell
+                int r = Random.Range(0, unoccupiedCells.Count);
+
+                // add enemy
+                EnemyActorController enemy = EnemyActorController.GetFromPool(s_gameSettings.enemyPrefab);
+                enemy.Initialize(this, depth, unoccupiedCells[r]);
+
+                // remove chosen cell
+                unoccupiedCells.RemoveAt(r);
+            }
+        }
     }
 }
