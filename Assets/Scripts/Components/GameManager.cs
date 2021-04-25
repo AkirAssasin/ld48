@@ -56,6 +56,10 @@ public class GameManager : MonoBehaviour {
     [Header("Score")]
     public Transform m_scoreTextTransform;
 
+    // title
+    [Header("Title")]
+    public TMPro.TextMeshPro m_titleTextMesh;
+
     // lose state
     [Header("Lose State")]
     public Transform m_retryPromptTransform;
@@ -161,6 +165,9 @@ public class GameManager : MonoBehaviour {
         // delete corridors above max
         int requiredTopDepth = m_playerActor.CurrentDepth - m_maxCorridorsAbove;
         if (m_topCorridorDepth < requiredTopDepth) {
+
+            // hide title if top is removed
+            if (m_topCorridorDepth == 0) m_titleTextMesh.enabled = false;
 
             for (int i = 0; i < requiredTopDepth - m_topCorridorDepth; ++i) {
                 m_corridors[i].Pool();

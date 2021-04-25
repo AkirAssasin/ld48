@@ -120,6 +120,7 @@ public class EnemyActorController : PoolableObject<EnemyActorController>, IActor
 
             // if same depth, move to player (for now)
             m_nextState = EnemyAIState.MoveToPlayer;
+            return;
         }
     }
 
