@@ -96,7 +96,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inPool: 1
-  m_speed: 30
-  m_colliderRadius: -0.05
+  m_speed: 60
   m_trailWidth: 0.03
   m_trailLength: 3
+  m_particleScale: {x: 0.2, y: 0.15}
+  m_particleLife: 0.15

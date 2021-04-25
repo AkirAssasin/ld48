@@ -482,6 +482,6 @@ MonoBehaviour:
   m_gameSettings: {fileID: 11400000, guid: bb1800c9b2d51e24598c284b25733f28, type: 2}
   m_player: {fileID: 3588051}
   m_corridorLength: 11
-  m_ambushMinTime: 1
-  m_ambushMaxTime: 4
+  m_ambushMinTime: 0
+  m_ambushMaxTime: 3
   m_maxCorridorsAbove: 4

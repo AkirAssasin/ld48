@@ -14,11 +14,14 @@ public class Projectile : PoolableObject<Projectile> {
     // public settings
     [Header("Movement and Collision")]
     public float m_speed;
-    public float m_colliderRadius;
 
     [Header("Trail")]
     public float m_trailWidth;
     public float m_trailLength;
+
+    [Header("Particle")]
+    public Vector2 m_particleScale;
+    public float m_particleLife;
 
     // corridor position
     Corridor m_corridor;
@@ -29,6 +32,7 @@ public class Projectile : PoolableObject<Projectile> {
     // movement
     bool m_collidedWithCorridor;
     Vector2 m_unitVelocity;
+    float m_angle;
 
     // trail after collision
     float m_trailLengthLeft;
@@ -64,6 +68,7 @@ public class Projectile : PoolableObject<Projectile> {
         // initialize movement
         m_unitVelocity = new Vector2(Mathf.Cos(radian), Mathf.Sin(radian));
         m_transform.localEulerAngles = new Vector3(0, 0, radian * Mathf.Rad2Deg);
+        m_angle = radian * Mathf.Rad2Deg;
 
         // reset collision state
         m_actorToIgnore = actorToIgnore;
@@ -103,6 +108,16 @@ public class Projectile : PoolableObject<Projectile> {
 
             // update position
             m_collidedWithCorridor = UpdatePosition(dt);
+            
+            // if collided, spawn particle
+            if (m_collidedWithCorridor) {
+
+                Vector2 particlePos = m_corridor.m_root.transform.position;
+                particlePos += m_position;
+
+                Particle p = Particle.GetFromPool(GameManager.s_gameSettings.particlePrefab);
+                p.Initialize(GameManager.s_gameSettings.muzzleFlashParticleSprite, particlePos, m_particleScale, m_angle, m_unitVelocity * -0.2f, m_particleLife);
+            }
 
             // compute length
             float fullLength = Vector2.Distance(m_startingPosition, m_position);
@@ -141,9 +156,6 @@ public class Projectile : PoolableObject<Projectile> {
                 m_currentCell = newCell;
             }
         }
-
-        // update position
-        bool intersected = UpdatePosition(dt);
     }
 
     // move with collision against corridor edges
@@ -161,33 +173,33 @@ public class Projectile : PoolableObject<Projectile> {
 
         // check for x-intersections
         if (delta.x != 0) {
-            if (nextPosition.x < m_colliderRadius - 0.5f) {
+            if (nextPosition.x < -0.5f) {
 
                 // intersected with left edge
                 intersected = true;
-                intersectTime = Mathf.Min(intersectTime, (m_position.x + 0.5f - m_colliderRadius) / delta.x);
+                intersectTime = Mathf.Min(intersectTime, (-0.5f - m_position.x) / delta.x);
         
-            } else if (nextPosition.x >= m_corridor.Length - 0.5f - m_colliderRadius) {
+            } else if (nextPosition.x >= m_corridor.Length - 0.5f) {
 
                 // intersected with right edge
                 intersected = true;
-                intersectTime = Mathf.Min(intersectTime, (m_corridor.Length - 0.5f - m_colliderRadius - m_position.x) / delta.x);
+                intersectTime = Mathf.Min(intersectTime, (m_corridor.Length - 0.5f - m_position.x) / delta.x);
             }
         }
 
         // check for y-intersections
         if (delta.y != 0) {
-            if (nextPosition.y < m_colliderRadius - 0.5f) {
+            if (nextPosition.y < -0.5f) {
 
                 // intersected with bottom edge
                 intersected = true;
-                intersectTime = Mathf.Min(intersectTime, (m_position.y + 0.5f - m_colliderRadius) / delta.y);
+                intersectTime = Mathf.Min(intersectTime, (-0.5f - m_position.y) / delta.y);
         
-            } else if (nextPosition.y >= 0.5f - m_colliderRadius) {
+            } else if (nextPosition.y >= 0.5f) {
 
                 // intersected with top edge
                 intersected = true;
-                intersectTime = Mathf.Min(intersectTime, (0.5f - m_colliderRadius - m_position.y) / delta.y);
+                intersectTime = Mathf.Min(intersectTime, (0.5f - m_position.y) / delta.y);
             }
         }
 
