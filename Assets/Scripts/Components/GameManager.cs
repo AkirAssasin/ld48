@@ -41,7 +41,19 @@ public class GameManager : MonoBehaviour {
     public float m_ambushMinTime;
     public float m_ambushMaxTime;
     public int m_maxCorridorsAbove;
-    
+
+    // transition
+    [Header("Black Screen")]
+    public Transform m_blackScreenTransform;
+    public float m_blackScreenDuration;
+    public AnimationCurve m_blackScreenCurve;
+
+    // black screen progress
+    float m_blackScreenProgress;
+    float m_blackScreenTrueDuration;
+    float m_blackScreenHeight;
+    float m_blackScreenBottomY;
+
     // reference to player actor
     Actor m_playerActor;
 
@@ -65,6 +77,9 @@ public class GameManager : MonoBehaviour {
         // create ambush list
         m_ambushes = new List<AmbushEnemyInfo>();
 
+        // hide black screen
+        m_blackScreenTransform.localScale = Vector3.zero;
+
         // initialize player
         m_player.Initialize(this, 0, m_corridorLength / 2);
         m_playerActor = m_player.GetComponent<Actor>();
@@ -75,6 +90,13 @@ public class GameManager : MonoBehaviour {
 
         // get delta time
         float dt = Time.deltaTime;
+
+        // update black screen
+        if (m_blackScreenProgress > 0f) {
+
+            m_blackScreenProgress -= dt;
+            SetBlackScreenPosition();
+        }
 
         // delete corridors above max
         int requiredTopDepth = m_playerActor.CurrentDepth - m_maxCorridorsAbove;
@@ -129,6 +151,20 @@ public class GameManager : MonoBehaviour {
         return m_corridors[depth - m_topCorridorDepth];
     }
 
+    // set black screen position
+    void SetBlackScreenPosition () {
+
+        if (m_blackScreenProgress > 0f) {
+
+            // compute current height
+            float currentHeight = m_blackScreenHeight * m_blackScreenCurve.Evaluate(m_blackScreenProgress / m_blackScreenTrueDuration);
+            Vector2 currentPos = new Vector2(0, m_blackScreenBottomY + currentHeight * 0.5f);
+            m_blackScreenTransform.position = currentPos;
+            m_blackScreenTransform.localScale = new Vector3(m_corridorLength, currentHeight, 1f);
+
+        } else m_blackScreenTransform.localScale = Vector3.zero;
+    }
+
     // create a new corridor
     void AddCorridor (int depth, int recurse = 0) {
 
@@ -142,18 +178,32 @@ public class GameManager : MonoBehaviour {
         // populate corridor
         GenerateCorridorContent(newCorridor, depth);
 
-        // should we recurse?
+        // check if this a recursed call
         if (recurse > 1) {
 
             // make holes then continue
             PerforateCorridor(newCorridor, 2);
             AddCorridor(depth + 1, recurse - 1);
 
-        } else if (recurse == 0 && depth > 6 && Random.value > 0.5f) {
+        } else {
             
-            // make holes then start recursing
-            PerforateCorridor(newCorridor, 2);
-            AddCorridor(depth + 1, Random.Range(1,3));
+            // height of this thing
+            int height = 1; 
+
+            // check if we start recursing
+            if (recurse == 0 && depth > 6 && Random.value > 0.5f) {
+            
+                // make holes then start recursing
+                PerforateCorridor(newCorridor, 2);
+                height = Random.Range(1,3) + 1;
+                AddCorridor(depth + 1, height - 1);
+            }
+
+            // set black screen
+            m_blackScreenProgress = m_blackScreenTrueDuration = m_blackScreenDuration * height;
+            m_blackScreenHeight = (1f + s_gameSettings.paddingBetweenCorridors) * height;
+            m_blackScreenBottomY = pos.y + 0.5f + s_gameSettings.paddingBetweenCorridors - m_blackScreenHeight;
+            SetBlackScreenPosition();
         }
     }
 
@@ -183,6 +233,7 @@ public class GameManager : MonoBehaviour {
         List<int> unoccupiedCells = new List<int>();
         for (int i = 0; i < corridor.Length; ++i) unoccupiedCells.Add(i);
 
+        /*
         // populate with enemies
         if (depth > 0) {
 
@@ -219,5 +270,6 @@ public class GameManager : MonoBehaviour {
             // remove chosen cell
             unoccupiedCells.RemoveAt(r);
         }
+        */
     }
 }
