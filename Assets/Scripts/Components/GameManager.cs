@@ -124,8 +124,10 @@ public class GameManager : MonoBehaviour {
 
                 // if active, countdown until enemy spawn
                 if (ambush.m_time > 0f) {
+                    
                     ambush.m_time -= dt;
-                } else {
+                
+                } else if (m_playerActor.CurrentCell != ambush.m_cell) {
                     
                     // spawn enemy and remove ambush when countdown is over
                     EnemyActorController enemy = EnemyActorController.GetFromPool(s_gameSettings.enemyPrefab);
@@ -134,7 +136,7 @@ public class GameManager : MonoBehaviour {
                     continue;
                 }
 
-            } else if (m_playerActor.CurrentDepth == ambush.m_depth) ambush.m_active = true;
+            } else if (m_playerActor.CurrentDepth > ambush.m_depth) ambush.m_active = true;
         }
     }
 
@@ -233,12 +235,11 @@ public class GameManager : MonoBehaviour {
         List<int> unoccupiedCells = new List<int>();
         for (int i = 0; i < corridor.Length; ++i) unoccupiedCells.Add(i);
 
-        /*
         // populate with enemies
         if (depth > 0) {
 
             // how many enemies to add
-            int enemyCount = Mathf.Clamp(1 + depth / 4, 1, 3);
+            int enemyCount = Mathf.Clamp(1 + depth / 4, 1, 2);
             for (int i = 0; i < enemyCount; ++i) {
 
                 // choose random cell
@@ -270,6 +271,5 @@ public class GameManager : MonoBehaviour {
             // remove chosen cell
             unoccupiedCells.RemoveAt(r);
         }
-        */
     }
 }

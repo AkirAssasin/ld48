@@ -233,7 +233,7 @@ MonoBehaviour:
   m_muzzleFlashDuration: 0.1
   m_yOffset: -0.1
   m_dyingDuration: 0.1
-  m_deathFadeDuration: 1.5
+  m_deathFadeDuration: 0.5
   m_deathOffsetStrength: 5
   m_faceDirectionDuration: 0.15
   m_moveDuration: 0.15
@@ -406,7 +406,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 4.5
+  orthographic size: 4
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -565,8 +565,8 @@ MonoBehaviour:
   m_player: {fileID: 3588051}
   m_corridorLength: 11
   m_ambushMinTime: 0
-  m_ambushMaxTime: 3
-  m_maxCorridorsAbove: 4
+  m_ambushMaxTime: 2
+  m_maxCorridorsAbove: 3
   m_blackScreenTransform: {fileID: 1406299755}
   m_blackScreenDuration: 0.5
   m_blackScreenCurve:

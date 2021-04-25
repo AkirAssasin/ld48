@@ -20,8 +20,8 @@ MonoBehaviour:
   audioClipPrefab: {fileID: 2497100704011603638, guid: 386d286415332ec42916cc942d496b8a, type: 3}
   angelWingPrefab: {fileID: 7202736248292111932, guid: 4b154b868b6d89449b027a8bdc4eb7f2, type: 3}
   wallNormalSprite: {fileID: 21300000, guid: 54864299e716281468aa4b8c655c6ecf, type: 3}
-  wallDoorSprite: {fileID: 21300000, guid: de46263370589ff4c83dc6bbe2a1ea24, type: 3}
-  holeSprite: {fileID: 21300000, guid: 760f1f5d5bd397f4db33adeebc4b1d0a, type: 3}
+  wallDoorSprite: {fileID: 21300000, guid: 54864299e716281468aa4b8c655c6ecf, type: 3}
+  holeSprite: {fileID: 21300000, guid: e91228792193d9147b68da621bd261ab, type: 3}
   actorAimSprite: {fileID: 21300000, guid: 965c2610cc1819842ae318658a3dd1c9, type: 3}
   actorRecoilSprite: {fileID: 21300000, guid: 61ae3d3284863ba438b564de1834bd58, type: 3}
   actorDyingSprite: {fileID: 21300000, guid: 86e7a7d69c7193a45b66061e6797bc2b, type: 3}

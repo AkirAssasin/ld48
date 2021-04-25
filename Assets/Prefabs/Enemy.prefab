@@ -117,12 +117,14 @@ MonoBehaviour:
   m_gunFireDuration: 0.1
   m_gunCooldownDuration: 0.2
   m_fireCameraTilt: 0
+  m_floorBreakGunPosition: {x: 0, y: 0}
+  m_floorBreakGunAngle: 0
   m_muzzleFlashScale: {x: 0.06, y: 0.25}
   m_muzzleFlashSpread: 45
   m_muzzleFlashDuration: 0.1
   m_yOffset: -0.1
   m_dyingDuration: 0.1
-  m_deathFadeDuration: 5
+  m_deathFadeDuration: 0.5
   m_deathOffsetStrength: 5
   m_faceDirectionDuration: 0.15
   m_moveDuration: 0.15

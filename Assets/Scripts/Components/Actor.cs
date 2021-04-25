@@ -503,7 +503,7 @@ public class Actor : MonoBehaviour {
         Color c = m_color;
         yield return new RunForDuration(m_deathFadeDuration, nt => {
         
-            c.a = 1f - nt;
+            c.a = (Random.value > nt) ? 1f : 0f;
             m_renderer.color = c;
         });
 
