@@ -33,6 +33,7 @@ public class Actor : MonoBehaviour {
     public Vector2 m_gunPosition;
     public float m_gunFireDuration;
     public float m_gunCooldownDuration;
+    public float m_fireCameraTilt;
 
     [Header("Particle")]
     public Vector2 m_muzzleFlashScale;
@@ -54,6 +55,9 @@ public class Actor : MonoBehaviour {
     public AnimationCurve m_moveCurve;
     public AnimationCurve m_descendCurve;
     public AnimationCurve m_ascendCurve;
+
+    [Header("SFX")]
+    public float m_sfxVolume;
     
     // controller
     IActorController m_controller;
@@ -132,13 +136,20 @@ public class Actor : MonoBehaviour {
         // fade in
         Color clear = m_color;
         clear.a = 0f;
-        yield return new RunForDuration(m_fadeInDuration, nt => { 
+        yield return new RunForDuration(m_fadeInDuration, nt => {
+            
             m_renderer.color = Color.Lerp(clear, m_color, nt);    
-        });
 
-        // un-immune to melee and projectile
-        m_immuneToMelee = true;
-        m_immuneToProjectile = true;
+            // un-immune to melee and projectile
+            if (nt > 0.7f && m_immuneToMelee) {
+
+                m_immuneToMelee = false;
+                m_immuneToProjectile = false;
+
+                // also slap whoever's in the way
+                m_currentCorridor.DoToActors(this, m_currentCell, m_currentCell, x => x.HitByMelee(0f));
+            }
+        });
 
         // set sprite
         m_renderer.sprite = GameManager.s_gameSettings.actorAimSprite;
@@ -222,6 +233,7 @@ public class Actor : MonoBehaviour {
         // if facing wrong direction, turn instead of move
         if (m_facingRight != dx > 0) {
             
+            GameManager.s_gameSettings.moveSFX.Play(m_sfxVolume);
             m_currentAction = m_currentAction.StartCoroutine(this, FaceDirectionAction(dx > 0));
 
         } else {
@@ -230,6 +242,7 @@ public class Actor : MonoBehaviour {
             m_currentCorridor.DoToActors(this, result, result, x => x.HitByMelee(dx));
 
             // move
+            GameManager.s_gameSettings.moveSFX.Play(m_sfxVolume);
             m_currentAction = m_currentAction.StartCoroutine(this, MoveAction(result));
         }
     }
@@ -247,6 +260,12 @@ public class Actor : MonoBehaviour {
         Vector2 position = m_currentCorridor.GetCellPosition(m_currentCell);
         Vector2 delta = new Vector2(m_facingRight ? m_gunPosition.x : -m_gunPosition.x, m_gunPosition.y + m_yOffset);
         position += delta;
+
+        // play sfx
+        GameManager.s_gameSettings.gunshotSFX.Play(m_sfxVolume);
+
+        // tilt camera
+        CameraController.s_extraTilt += m_facingRight ? -m_fireCameraTilt : m_fireCameraTilt;
 
         // spawn projectile
         Projectile projectile = Projectile.GetFromPool(GameManager.s_gameSettings.projectilePrefab);
@@ -312,6 +331,9 @@ public class Actor : MonoBehaviour {
             }
         });
 
+        // play landing sound
+        GameManager.s_gameSettings.moveSFX.Play(m_sfxVolume);
+
         // enter next corridor
         EnterCorridor(nextCorridor, m_currentCell);
         ++m_currentDepth;
@@ -331,7 +353,7 @@ public class Actor : MonoBehaviour {
         if (m_currentAction?.running == true) return;
 
         // make hole in corridor
-        m_currentCorridor.MakeHole(m_currentCell);
+        m_currentCorridor.MakeHole(m_currentCell, m_sfxVolume);
 
         // get next corridor
         Corridor nextCorridor = m_gameManager.GetCorridor(m_currentDepth + 1);
@@ -395,6 +417,9 @@ public class Actor : MonoBehaviour {
         Corridor topCorridor = m_gameManager.GetCorridor(m_currentDepth - 1);
         if (!topCorridor.m_cells[m_currentCell].m_hasHole) return;
 
+        // play jump sound
+        GameManager.s_gameSettings.jumpSFX.Play(m_sfxVolume);
+
         // ok climb up
         m_currentAction = m_currentAction.StartCoroutine(this, AscendAction(topCorridor));
     }
@@ -454,6 +479,9 @@ public class Actor : MonoBehaviour {
         // cannot die if dead
         if (m_isDead) return;
         m_isDead = true;
+
+        // slap
+        GameManager.s_gameSettings.slapSFX.Play(m_sfxVolume);
 
         // force death action
         m_currentAction?.Stop();

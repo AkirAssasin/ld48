@@ -60,7 +60,6 @@ public class Projectile : PoolableObject<Projectile> {
         m_startingPosition = m_position = position;
         m_transform.localPosition = m_position;
         m_currentCell = Mathf.RoundToInt(m_position.x);
-        Debug.Log("fired from " + m_currentCell);
 
         // initialize movement
         m_unitVelocity = new Vector2(Mathf.Cos(radian), Mathf.Sin(radian));

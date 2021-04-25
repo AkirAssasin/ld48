@@ -52,10 +52,10 @@ public class Corridor {
     }
 
     // helper to make hole
-    public void MakeHole (int cell) {
+    public void MakeHole (int cell, float sfxVolume) {
 
         // make hole in cell
-        m_cells[cell].MakeHole();
+        m_cells[cell].MakeHole(sfxVolume);
     }
 
     // helper to find hole

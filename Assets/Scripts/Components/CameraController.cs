@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour {
 
+    // tilt - static because I'm lazy
+    public static float s_extraTilt = 0f;
+
     // public settings
     [Header("Positioning")]
     public Transform m_followTarget;
@@ -14,6 +17,7 @@ public class CameraController : MonoBehaviour {
     public float m_maxTilt;
     public float m_tiltMinDistance;
     public float m_tiltMaxDistance;
+    public float m_extraTiltLerpRate;
 
     // current position
     Vector2 m_position;
@@ -31,6 +35,9 @@ public class CameraController : MonoBehaviour {
 
         // get position
         m_position = m_followTarget.position;
+
+        // reset extra tilt
+        s_extraTilt = 0f;
     }
 
     // update call
@@ -51,6 +58,10 @@ public class CameraController : MonoBehaviour {
             tilt = m_maxTilt * Mathf.Clamp01(absDelta - m_tiltMinDistance / (m_tiltMaxDistance - m_tiltMinDistance));
             if (delta < 0) tilt = -tilt;
         }
+
+        // add extra tilt
+        tilt = Mathf.Clamp(tilt + s_extraTilt, -m_maxTilt, m_maxTilt);
+        s_extraTilt = Mathf.Lerp(s_extraTilt, 0f, dt * m_extraTiltLerpRate);
 
         // lerp to target
         m_position = Vector2.Lerp(m_position, targetPosition, dt * m_positionLerpRate);

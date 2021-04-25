@@ -13,6 +13,7 @@ public class GameSettings : ScriptableObject {
     public GameObject projectilePrefab;
     public GameObject enemyPrefab;
     public GameObject particlePrefab;
+    public GameObject audioClipPrefab;
 
     [Header("Wall Sprites")]
     public Sprite wallNormalSprite;
@@ -26,6 +27,13 @@ public class GameSettings : ScriptableObject {
     public Sprite actorDeadSprite;
     public Sprite actorFallSprite;
     public Sprite actorReadySprite;
+
+    [Header("Sounds")]
+    public AudioGroup gunshotSFX;
+    public AudioGroup jumpSFX;
+    public AudioGroup moveSFX;
+    public AudioGroup floorBreakSFX;
+    public AudioGroup slapSFX;
 
     // helper functions
     public Sprite GetWallSprite (WallState state) {

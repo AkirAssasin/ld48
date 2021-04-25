@@ -17,6 +17,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 1680031596779085424, guid: 62d77d6aa59991443b0c5fcce1fe30be, type: 3}
   enemyPrefab: {fileID: 9051097910050716241, guid: 30193dd1dcc3cd14685a92483547b5dd, type: 3}
   particlePrefab: {fileID: 3408098776439915735, guid: cb71fdd78935b9646b50453fda90b2d4, type: 3}
+  audioClipPrefab: {fileID: 2497100704011603638, guid: 386d286415332ec42916cc942d496b8a, type: 3}
   wallNormalSprite: {fileID: 21300000, guid: 54864299e716281468aa4b8c655c6ecf, type: 3}
   wallDoorSprite: {fileID: 21300000, guid: de46263370589ff4c83dc6bbe2a1ea24, type: 3}
   holeSprite: {fileID: 21300000, guid: 760f1f5d5bd397f4db33adeebc4b1d0a, type: 3}
@@ -26,3 +27,18 @@ MonoBehaviour:
   actorDeadSprite: {fileID: 21300000, guid: 6c3570c897c0d2b46b5454b7cd45e8ff, type: 3}
   actorFallSprite: {fileID: 21300000, guid: 9388b6e9afa261f4ab51ca71adf7ae94, type: 3}
   actorReadySprite: {fileID: 21300000, guid: 5c7a73611f7122746b1f97ec0b31bd93, type: 3}
+  gunshotSFX:
+    m_clip: {fileID: 8300000, guid: a41a8b8b4046e4e4ca9b3947871f9d2c, type: 3}
+    m_volume: 1
+  jumpSFX:
+    m_clip: {fileID: 8300000, guid: 68235c8fe1c319d4bbc690953a607cfc, type: 3}
+    m_volume: 0.8
+  moveSFX:
+    m_clip: {fileID: 8300000, guid: 0544377d3e913f141bb1d97014867337, type: 3}
+    m_volume: 1
+  floorBreakSFX:
+    m_clip: {fileID: 8300000, guid: 035cbc8daf05c4145928170faafaecff, type: 3}
+    m_volume: 1
+  slapSFX:
+    m_clip: {fileID: 8300000, guid: 192f915ac85621f4ca5e6ddac350400a, type: 3}
+    m_volume: 1
