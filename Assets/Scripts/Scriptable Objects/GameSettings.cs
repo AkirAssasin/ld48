@@ -40,6 +40,7 @@ public class GameSettings : ScriptableObject {
     public AudioGroup moveSFX;
     public AudioGroup floorBreakSFX;
     public AudioGroup slapSFX;
+    public AudioGroup appearSFX;
 
     // helper functions
     public Sprite GetWallSprite (WallState state) {

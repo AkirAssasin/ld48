@@ -128,6 +128,7 @@ public class Actor : MonoBehaviour {
 
         // do fade in
         if (doFadeIn) {
+            GameManager.s_gameSettings.appearSFX.Play(m_sfxVolume);
             m_currentAction = m_currentAction.StartCoroutine(this, FadeInAction());
         }
     }
@@ -140,11 +141,11 @@ public class Actor : MonoBehaviour {
         m_immuneToProjectile = true;
 
         // fade in
-        Color clear = m_color;
-        clear.a = 0f;
+        Color color = m_color;
         yield return new RunForDuration(m_fadeInDuration, nt => {
             
-            m_renderer.color = Color.Lerp(clear, m_color, nt);    
+            color.a = Random.value > nt ? 0f : 1f;
+            m_renderer.color = color; 
 
             // un-immune to melee and projectile
             if (nt > 0.7f && m_immuneToMelee) {

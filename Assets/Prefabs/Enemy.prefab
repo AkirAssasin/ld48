@@ -110,7 +110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6abdbda1a347e4742816bf3a35f87696, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_fadeInDuration: 0.5
+  m_fadeInDuration: 1
   m_color: {r: 0.019607844, g: 0.019607844, b: 0.019607844, a: 1}
   m_projectileSpread: 3
   m_gunPosition: {x: 0.31, y: 0.34}

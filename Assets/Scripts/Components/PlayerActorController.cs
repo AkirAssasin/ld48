@@ -20,7 +20,7 @@ public class PlayerActorController : MonoBehaviour, IActorController {
 
         // get and initialize actor
         m_actor = GetComponent<Actor>();
-        m_actor.Initialize(this, gameManager, depth, cell, false);
+        m_actor.Initialize(this, gameManager, depth, cell, true);
 
         // spawn angel wing for actor
         foreach (AngelWingParameter param in m_angelWingParams) {

@@ -46,3 +46,6 @@ MonoBehaviour:
   slapSFX:
     m_clip: {fileID: 8300000, guid: 192f915ac85621f4ca5e6ddac350400a, type: 3}
     m_volume: 1
+  appearSFX:
+    m_clip: {fileID: 8300000, guid: b8c1f43ac77332240a1baa48d9e21f17, type: 3}
+    m_volume: 1
