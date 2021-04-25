@@ -14,6 +14,7 @@ public class GameSettings : ScriptableObject {
     public GameObject enemyPrefab;
     public GameObject particlePrefab;
     public GameObject audioClipPrefab;
+    public GameObject angelWingPrefab;
 
     [Header("Wall Sprites")]
     public Sprite wallNormalSprite;

@@ -6,6 +6,9 @@ public class Particle : PoolableObject<Particle> {
 
     protected override Particle self => this;
 
+    [Header("Appearance")]
+    public Color m_color;
+
     // particle values
     Vector2 m_position;
     Vector2 m_velocity;
@@ -45,6 +48,8 @@ public class Particle : PoolableObject<Particle> {
         m_transform.localEulerAngles = new Vector3(0, 0, angle);
 
         // initialize sprite
+        m_color.a = 1f;
+        m_renderer.color = m_color;
         m_renderer.enabled = true;
     }
 
@@ -63,7 +68,11 @@ public class Particle : PoolableObject<Particle> {
         m_transform.position = m_position;
 
         // update scale
-        m_transform.localScale = new Vector3(m_baseScale.x * nt, m_baseScale.y * nt, 1f);
+        m_transform.localScale = new Vector3(m_baseScale.x * (2f - nt), m_baseScale.y * (2f - nt), 1f);
+
+        // update color
+        m_color.a = nt;
+        m_renderer.color = m_color;
 
         // update life
         m_life -= dt;

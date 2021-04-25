@@ -8,6 +8,10 @@ public class PlayerActorController : MonoBehaviour, IActorController {
     // actor label
     public ActorLabel Label => ActorLabel.Player;
 
+    // public settings
+    [Header("Angel Wings")]
+    public AngelWingParameter[] m_angelWingParams;
+
     // components
     Actor m_actor;
 
@@ -16,7 +20,13 @@ public class PlayerActorController : MonoBehaviour, IActorController {
 
         // get and initialize actor
         m_actor = GetComponent<Actor>();
-        m_actor.Initialize(this, gameManager, depth, cell, true);
+        m_actor.Initialize(this, gameManager, depth, cell, false);
+
+        // spawn angel wing for actor
+        foreach (AngelWingParameter param in m_angelWingParams) {
+            AngelWing angelWing = AngelWing.GetFromPool(GameManager.s_gameSettings.angelWingPrefab);
+            angelWing.Initialize(m_actor, param);
+        }
     }
 
     // update call

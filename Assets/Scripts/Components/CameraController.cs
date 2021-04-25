@@ -48,6 +48,7 @@ public class CameraController : MonoBehaviour {
 
         // get target position
         Vector2 targetPosition = m_followTarget.position;
+        targetPosition.x *= 0.5f;
 
         // tilt to target
         float delta = targetPosition.x - m_position.x;

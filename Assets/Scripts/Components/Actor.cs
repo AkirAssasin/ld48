@@ -22,6 +22,7 @@ public class Actor : MonoBehaviour {
     public bool IsDead => m_isDead;
     public bool FacingRight => m_facingRight;
     public ActorLabel Label => m_controller.Label;
+    public Vector2 GlobalPosition => m_transform.position;
 
     // public settings
     [Header("Appearance")]
@@ -411,7 +412,7 @@ public class Actor : MonoBehaviour {
         if (m_currentAction?.running == true) return;
 
         // cannot go up if depth is highest
-        if (m_currentDepth == 0) return;
+        if (m_currentDepth == m_gameManager.TopCorridorDepth) return;
 
         // can only go up if there is hole
         Corridor topCorridor = m_gameManager.GetCorridor(m_currentDepth - 1);

@@ -21,6 +21,9 @@ public class AmbushEnemyInfo {
 // class managing game
 public class GameManager : MonoBehaviour {
 
+    // public getters
+    public int TopCorridorDepth => m_topCorridorDepth;
+
     // static game settings reference
     public static GameSettings s_gameSettings;
 
@@ -37,12 +40,14 @@ public class GameManager : MonoBehaviour {
     public int m_corridorLength;
     public float m_ambushMinTime;
     public float m_ambushMaxTime;
+    public int m_maxCorridorsAbove;
     
     // reference to player actor
     Actor m_playerActor;
 
     // list of corridors
     List<Corridor> m_corridors;
+    int m_topCorridorDepth;
 
     // list of ambushes
     List<AmbushEnemyInfo> m_ambushes;
@@ -55,6 +60,7 @@ public class GameManager : MonoBehaviour {
 
         // create corridor list
         m_corridors = new List<Corridor>();
+        m_topCorridorDepth = 0;
 
         // create ambush list
         m_ambushes = new List<AmbushEnemyInfo>();
@@ -70,11 +76,28 @@ public class GameManager : MonoBehaviour {
         // get delta time
         float dt = Time.deltaTime;
 
+        // delete corridors above max
+        int requiredTopDepth = m_playerActor.CurrentDepth - m_maxCorridorsAbove;
+        if (m_topCorridorDepth < requiredTopDepth) {
+
+            for (int i = 0; i < requiredTopDepth - m_topCorridorDepth; ++i) {
+                m_corridors[i].Pool();
+            }
+            m_corridors.RemoveRange(0, requiredTopDepth - m_topCorridorDepth);
+            m_topCorridorDepth = requiredTopDepth;
+        }
+
         // update all ambushes
         for (int i = m_ambushes.Count - 1; i >= 0; --i) {
 
-            // check if ambush is active
+            // discard if out of depth
             AmbushEnemyInfo ambush = m_ambushes[i];
+            if (ambush.m_depth < m_topCorridorDepth) {
+                m_ambushes.RemoveAt(i);
+                continue;
+            }
+
+            // otherwise run normally
             if (ambush.m_active) {
 
                 // if active, countdown until enemy spawn
@@ -97,22 +120,30 @@ public class GameManager : MonoBehaviour {
     public Corridor GetCorridor (int depth) {
 
         // if the depth doesn't exist, keep making corridors
-        while (depth >= m_corridors.Count) {
+        while (depth - m_topCorridorDepth >= m_corridors.Count) {
 
-            // compute position
-            int currentDepth = m_corridors.Count;
-            Vector2 pos = new Vector2(0, (-1f - s_gameSettings.paddingBetweenCorridors) * currentDepth);
-
-            // create corridor
-            Corridor newCorridor = new Corridor(pos, m_corridorLength);
-            m_corridors.Add(newCorridor);
-            GenerateCorridorContent(newCorridor, currentDepth);
+            // add corridor
+            AddCorridor(m_topCorridorDepth + m_corridors.Count);
         }
 
-        return m_corridors[depth];
+        return m_corridors[depth - m_topCorridorDepth];
     }
 
     // create a new corridor
+    void AddCorridor (int depth) {
+
+        // compute position
+        Vector2 pos = new Vector2((m_corridorLength - 1f) * -0.5f, (-1f - s_gameSettings.paddingBetweenCorridors) * depth);
+
+        // create corridor
+        Corridor newCorridor = new Corridor(pos, m_corridorLength);
+        m_corridors.Add(newCorridor);
+
+        // populate corridor
+        GenerateCorridorContent(newCorridor, depth);
+    }
+
+    // populate a corridor (assumed empty)
     void GenerateCorridorContent (Corridor corridor, int depth) {
 
         // generate list of cells
