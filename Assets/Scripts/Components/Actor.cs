@@ -315,55 +315,58 @@ public class Actor : MonoBehaviour {
         m_currentAction = m_currentAction.StartCoroutine(this, ProjectileFireAction());
     }
 
-    // descend action
-    IEnumerator DescendAction (Corridor nextCorridor, bool floorBreak) {
+    // floor break action
+    IEnumerator FloorBreakAction () {
 
-        // do we need to break the floor first
-        if (floorBreak) {
+        // shoot the floor a few times
+        m_renderer.sprite = GameManager.s_gameSettings.actorFloorBreakSprite;
+        for (int i = 2; i >= 1; --i) {
 
-            // shoot the floor a few times
-            m_renderer.sprite = GameManager.s_gameSettings.actorFloorBreakSprite;
-            for (int i = 2; i >= 1; --i) {
+            // fire projectile
+            float angle = m_floorBreakGunAngle;
+            if (!m_facingRight) angle = -180f - angle;
+            FireProjectile(m_floorBreakGunPosition, angle * Mathf.Deg2Rad);
 
-                // fire projectile
-                float angle = m_floorBreakGunAngle;
-                if (!m_facingRight) angle = -180f - angle;
-                FireProjectile(m_floorBreakGunPosition, angle * Mathf.Deg2Rad);
+            // break the floor with the last shot
+            if (i == 1) {
 
-                // break the floor with the last shot
-                if (i == 1) {
+                // make hole in corridor
+                m_currentCorridor.MakeHole(m_currentCell);
+                
+                // play sound
+                GameManager.s_gameSettings.floorBreakSFX.Play(m_sfxVolume);
 
-                    // make hole in corridor
-                    m_currentCorridor.MakeHole(m_currentCell);
-                    
-                    // play sound
-                    GameManager.s_gameSettings.floorBreakSFX.Play(m_sfxVolume);
+                // spawn particles
+                int particleCount = Random.Range(4, 7);
+                Vector2 particlePos = m_transform.position;
+                Vector2 particleScale = new Vector2(1f / particleCount, GameManager.s_gameSettings.paddingBetweenCorridors * 0.5f);
+                particlePos.y -= m_yOffset + 0.5f + GameManager.s_gameSettings.paddingBetweenCorridors * 0.5f;
+                particlePos.x += (0.5f / particleCount) - 0.5f;
+                for (int k = 0; k < particleCount; ++k) {
 
-                    // spawn particles
-                    int particleCount = Random.Range(4, 7);
-                    Vector2 particlePos = m_transform.position;
-                    Vector2 particleScale = new Vector2(1f / particleCount, GameManager.s_gameSettings.paddingBetweenCorridors * 0.5f);
-                    particlePos.y -= m_yOffset + 0.5f + GameManager.s_gameSettings.paddingBetweenCorridors * 0.5f;
-                    particlePos.x += (0.5f / particleCount) - 0.5f;
-                    for (int k = 0; k < particleCount; ++k) {
+                    // random speed
+                    Vector2 velocity = new Vector2(0, -1f - Random.value);
 
-                        // random speed
-                        Vector2 velocity = new Vector2(0, -1f - Random.value);
+                    // spawn particle
+                    Particle p = Particle.GetFromPool(GameManager.s_gameSettings.particlePrefab);
+                    p.Initialize(GameManager.s_gameSettings.floorBreakParticleSprite, particlePos, particleScale, 
+                        0f, velocity, 0.4f);
 
-                        // spawn particle
-                        Particle p = Particle.GetFromPool(GameManager.s_gameSettings.particlePrefab);
-                        p.Initialize(GameManager.s_gameSettings.floorBreakParticleSprite, particlePos, particleScale, 
-                            0f, velocity, 0.4f);
-
-                        // offset position
-                        particlePos.x += 1f / particleCount;
-                    }
+                    // offset position
+                    particlePos.x += 1f / particleCount;
                 }
-
-                // reload
-                yield return new WaitForSeconds(m_gunFireDuration + m_gunCooldownDuration);
             }
+
+            // reload
+            yield return new WaitForSeconds(m_gunFireDuration + m_gunCooldownDuration);
         }
+
+        // reset sprite
+        m_renderer.sprite = GameManager.s_gameSettings.actorAimSprite;
+    }
+
+    // descend action
+    IEnumerator DescendAction (Corridor nextCorridor) {
 
         // immune to melee and projectile
         m_immuneToMelee = true;
@@ -416,9 +419,11 @@ public class Actor : MonoBehaviour {
         // get next corridor
         Corridor nextCorridor = m_gameManager.GetCorridor(m_currentDepth + 1);
 
-        // begin descend action
-        IEnumerator act = DescendAction(nextCorridor, !m_currentCorridor.HasHole(m_currentCell));
-        m_currentAction = m_currentAction.StartCoroutine(this, act);
+        // do we need to break the floor
+        if (m_currentCorridor.HasHole(m_currentCell)) {
+            m_currentAction = m_currentAction.StartCoroutine(this, DescendAction(nextCorridor));
+        } else m_currentAction = m_currentAction.StartCoroutine(this, FloorBreakAction());
+        
     }
 
     // ascend action
