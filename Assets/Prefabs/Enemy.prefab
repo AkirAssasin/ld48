@@ -111,7 +111,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_fadeInDuration: 1
-  m_color: {r: 0.019607844, g: 0.019607844, b: 0.019607844, a: 1}
+  m_color: {r: 0.039215688, g: 0.039215688, b: 0.078431375, a: 1}
   m_projectileSpread: 3
   m_gunPosition: {x: 0.31, y: 0.34}
   m_gunFireDuration: 0.1

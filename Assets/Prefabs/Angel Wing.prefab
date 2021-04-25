@@ -98,5 +98,5 @@ MonoBehaviour:
   inPool: 1
   m_baseLerpRate: 20
   m_destroyParticleLife: 0.5
-  m_color: {r: 0, g: 0, b: 0, a: 1}
+  m_color: {r: 0.039215688, g: 0.039215688, b: 0.078431375, a: 1}
   m_minimumBeepInterval: 0.1
