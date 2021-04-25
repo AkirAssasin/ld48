@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // wall state enum
-public enum WallState { Normal };
+public enum WallState { Normal, Door };
 
 // class representing a single cell
 public class Cell {
@@ -32,11 +32,18 @@ public class Cell {
         // initialize wall state and display
         m_wallState = wallState;
         m_wallDisplay = WallDisplay.GetFromPool(GameManager.s_gameSettings.wallDisplayPrefab);
-        m_wallDisplay.Initialize(m_root.transform, m_position, GameManager.s_gameSettings.wallNormalSprite);
+        m_wallDisplay.Initialize(m_root.transform, m_position, GameManager.s_gameSettings.GetWallSprite(m_wallState));
 
         // start out with no hole
         m_hasHole = false;
         m_holeDisplay = null;
+    }
+
+    // helper to set wall state
+    public void SetWallState (WallState wallState) {
+
+        m_wallState = wallState;
+        m_wallDisplay.SetSprite(GameManager.s_gameSettings.GetWallSprite(m_wallState));
     }
 
     // helper to make hole

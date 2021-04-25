@@ -33,6 +33,12 @@ public class WallDisplay : PoolableObject<WallDisplay> {
         m_renderer.enabled = true;
     }
 
+    // helper to set wall sprite
+    public void SetSprite (Sprite sprite) {
+
+        m_renderer.sprite = sprite;
+    }
+
     // pool function
     public new void Pool () {
 

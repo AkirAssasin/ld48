@@ -15,7 +15,8 @@ public class GameSettings : ScriptableObject {
     public GameObject particlePrefab;
 
     [Header("Wall Sprites")]
-    public Sprite wallNormalSprite; 
+    public Sprite wallNormalSprite;
+    public Sprite wallDoorSprite;
     public Sprite holeSprite;
 
     [Header("Actor Sprites")]
@@ -24,4 +25,21 @@ public class GameSettings : ScriptableObject {
     public Sprite actorDyingSprite;
     public Sprite actorDeadSprite;
     public Sprite actorFallSprite;
+    public Sprite actorReadySprite;
+
+    // helper functions
+    public Sprite GetWallSprite (WallState state) {
+
+        // return wall sprites based on state
+        switch (state) {
+            case WallState.Normal: 
+                return wallNormalSprite;
+
+            case WallState.Door: 
+                return wallDoorSprite;
+        }
+
+        // throw if undefined
+        throw new System.InvalidOperationException("undefined wall state sprite!");
+    }
 }

@@ -12,15 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6ff6c2a8ddfbb94392cafb9be5802d7, type: 3}
   m_Name: Game Settings
   m_EditorClassIdentifier: 
-  paddingBetweenCorridors: 0.5
+  paddingBetweenCorridors: 1
   wallDisplayPrefab: {fileID: 3587510308239809499, guid: 170df9fc52c37dc479991990ae7842f6, type: 3}
   projectilePrefab: {fileID: 1680031596779085424, guid: 62d77d6aa59991443b0c5fcce1fe30be, type: 3}
   enemyPrefab: {fileID: 9051097910050716241, guid: 30193dd1dcc3cd14685a92483547b5dd, type: 3}
   particlePrefab: {fileID: 3408098776439915735, guid: cb71fdd78935b9646b50453fda90b2d4, type: 3}
   wallNormalSprite: {fileID: 21300000, guid: 54864299e716281468aa4b8c655c6ecf, type: 3}
+  wallDoorSprite: {fileID: 21300000, guid: de46263370589ff4c83dc6bbe2a1ea24, type: 3}
   holeSprite: {fileID: 21300000, guid: 760f1f5d5bd397f4db33adeebc4b1d0a, type: 3}
   actorAimSprite: {fileID: 21300000, guid: 965c2610cc1819842ae318658a3dd1c9, type: 3}
   actorRecoilSprite: {fileID: 21300000, guid: 61ae3d3284863ba438b564de1834bd58, type: 3}
   actorDyingSprite: {fileID: 21300000, guid: 86e7a7d69c7193a45b66061e6797bc2b, type: 3}
   actorDeadSprite: {fileID: 21300000, guid: 6c3570c897c0d2b46b5454b7cd45e8ff, type: 3}
   actorFallSprite: {fileID: 21300000, guid: 9388b6e9afa261f4ab51ca71adf7ae94, type: 3}
+  actorReadySprite: {fileID: 21300000, guid: 5c7a73611f7122746b1f97ec0b31bd93, type: 3}

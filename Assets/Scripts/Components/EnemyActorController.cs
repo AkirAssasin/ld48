@@ -36,7 +36,7 @@ public class EnemyActorController : PoolableObject<EnemyActorController>, IActor
     Actor m_actor;
 
     // initialize function
-    public void Initialize (GameManager gameManager, int depth, int cell) {
+    public void Initialize (GameManager gameManager, int depth, int cell, bool isAmbush) {
 
         // do poolable initialize
         base.Initialize();
@@ -47,11 +47,11 @@ public class EnemyActorController : PoolableObject<EnemyActorController>, IActor
 
         // get and initialize actor
         m_actor = GetComponent<Actor>();
-        m_actor.Initialize(this, gameManager, depth, cell);
+        m_actor.Initialize(this, gameManager, depth, cell, isAmbush);
 
         // initialize state
         m_currentState = EnemyAIState.Restart;
-        m_nextState = EnemyAIState.Idle;
+        m_nextState = isAmbush ? EnemyAIState.MoveToPlayer : EnemyAIState.Idle;
         m_currentStateInit = null;
         UpdateAIState();
         m_reactionProcessing = 0f;

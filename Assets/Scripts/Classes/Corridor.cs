@@ -45,6 +45,12 @@ public class Corridor {
         return new Vector2(cell, 0);
     }
 
+    // helper to set wall state
+    public void SetWallState (WallState wallState, int cell) {
+
+        m_cells[cell].SetWallState(wallState);
+    }
+
     // helper to make hole
     public void MakeHole (int cell) {
 

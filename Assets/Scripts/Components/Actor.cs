@@ -25,6 +25,7 @@ public class Actor : MonoBehaviour {
 
     // public settings
     [Header("Appearance")]
+    public float m_fadeInDuration;
     public Color m_color;
 
     [Header("Projectile")]
@@ -82,7 +83,7 @@ public class Actor : MonoBehaviour {
     SpriteRenderer m_renderer;
 
     // initialize function
-    public void Initialize (IActorController controller, GameManager gameManager, int depth, int cell) {
+    public void Initialize (IActorController controller, GameManager gameManager, int depth, int cell, bool doFadeIn) {
 
         // reference controller
         m_controller = controller;
@@ -111,9 +112,36 @@ public class Actor : MonoBehaviour {
         m_renderer.flipX = !m_facingRight;
 
         // initialize renderer
-        m_renderer.color = m_color;
-        m_renderer.sprite = GameManager.s_gameSettings.actorAimSprite;
+        m_renderer.color = doFadeIn ? Color.clear : m_color;
+        m_renderer.sprite = doFadeIn ? GameManager.s_gameSettings.actorReadySprite : GameManager.s_gameSettings.actorAimSprite;
         m_renderer.enabled = true;
+
+        // do fade in
+        if (doFadeIn) {
+            m_currentAction = m_currentAction.StartCoroutine(this, FadeInAction());
+        }
+    }
+
+    // fade in action
+    IEnumerator FadeInAction () {
+
+        // immune to melee and projectile
+        m_immuneToMelee = true;
+        m_immuneToProjectile = true;
+
+        // fade in
+        Color clear = m_color;
+        clear.a = 0f;
+        yield return new RunForDuration(m_fadeInDuration, nt => { 
+            m_renderer.color = Color.Lerp(clear, m_color, nt);    
+        });
+
+        // un-immune to melee and projectile
+        m_immuneToMelee = true;
+        m_immuneToProjectile = true;
+
+        // set sprite
+        m_renderer.sprite = GameManager.s_gameSettings.actorAimSprite;
     }
 
     // update call

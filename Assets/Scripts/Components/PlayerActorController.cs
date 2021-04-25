@@ -16,7 +16,7 @@ public class PlayerActorController : MonoBehaviour, IActorController {
 
         // get and initialize actor
         m_actor = GetComponent<Actor>();
-        m_actor.Initialize(this, gameManager, depth, cell);
+        m_actor.Initialize(this, gameManager, depth, cell, true);
     }
 
     // update call
