@@ -182,7 +182,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 965c2610cc1819842ae318658a3dd1c9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5a469cecb460eca4b8ac07d6382472a1, type: 3}
   m_Color: {r: 0.019607844, g: 0.019607844, b: 0.019607844, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -226,7 +226,9 @@ MonoBehaviour:
   m_gunFireDuration: 0.1
   m_gunCooldownDuration: 0.2
   m_fireCameraTilt: 2
-  m_muzzleFlashScale: {x: 0.03, y: 0.125}
+  m_floorBreakGunPosition: {x: 0.13, y: -0.15}
+  m_floorBreakGunAngle: -60
+  m_muzzleFlashScale: {x: 0.06, y: 0.25}
   m_muzzleFlashSpread: 45
   m_muzzleFlashDuration: 0.1
   m_yOffset: -0.1
@@ -236,6 +238,7 @@ MonoBehaviour:
   m_faceDirectionDuration: 0.15
   m_moveDuration: 0.15
   m_descendDuration: 0.3
+  m_descendWithFloorBreakDuration: 0.2
   m_moveCurve:
     serializedVersion: 2
     m_Curve:

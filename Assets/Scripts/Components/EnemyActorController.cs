@@ -248,17 +248,29 @@ public class EnemyActorController : PoolableObject<EnemyActorController>, IActor
             return;
         }
 
-        // check if we are facing the right direction
-        bool shouldFaceRight = m_playerActor.CurrentCell > m_actor.CurrentCell;
-        if (shouldFaceRight != m_actor.FacingRight) {
+        // if standing on same spot as player, move out
+        if (m_actor.CurrentCell == m_playerActor.CurrentCell) {
 
-            // turn to player
-            m_actor.Move(shouldFaceRight ? 1 : -1);
+            if (m_actor.CurrentCell == 0) {
+                m_actor.Move(1);
+            } else if (m_actor.CurrentCell == m_actor.CurrentCorridor.Length - 1) {
+                m_actor.Move(-1);
+            } else m_actor.Move(m_actor.FacingRight ? 1 : -1);
+
+        } else {
+
+            // check if we are facing the right direction
+            bool shouldFaceRight = m_playerActor.CurrentCell > m_actor.CurrentCell;
+            if (shouldFaceRight != m_actor.FacingRight) {
+
+                // turn to player
+                m_actor.Move(shouldFaceRight ? 1 : -1);
         
-        } else if (!FriendlyInLineOfFire()) {
+            } else if (!FriendlyInLineOfFire()) {
 
-            // fire at player
-            m_actor.FireProjectile();
+                // fire at player
+                m_actor.FireProjectile();
+            }
         }
     }
 

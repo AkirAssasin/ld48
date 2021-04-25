@@ -130,7 +130,7 @@ public class GameManager : MonoBehaviour {
     }
 
     // create a new corridor
-    void AddCorridor (int depth) {
+    void AddCorridor (int depth, int recurse = 0) {
 
         // compute position
         Vector2 pos = new Vector2((m_corridorLength - 1f) * -0.5f, (-1f - s_gameSettings.paddingBetweenCorridors) * depth);
@@ -141,6 +141,39 @@ public class GameManager : MonoBehaviour {
 
         // populate corridor
         GenerateCorridorContent(newCorridor, depth);
+
+        // should we recurse?
+        if (recurse > 1) {
+
+            // make holes then continue
+            PerforateCorridor(newCorridor, 2);
+            AddCorridor(depth + 1, recurse - 1);
+
+        } else if (recurse == 0 && depth > 6 && Random.value > 0.5f) {
+            
+            // make holes then start recursing
+            PerforateCorridor(newCorridor, 2);
+            AddCorridor(depth + 1, Random.Range(1,3));
+        }
+    }
+
+    // perforate corridor with holes
+    void PerforateCorridor (Corridor corridor, int holeCount) {
+
+        List<int> cells = new List<int>();
+        for (int i = 0; i < corridor.Length; ++i) cells.Add(i);
+
+        for (int i = 0; i < holeCount; ++i) {
+
+            // choose random cell
+            int r = Random.Range(0, cells.Count);
+
+            // add hole without sound
+            corridor.MakeHole(cells[r]);
+
+            // remove chosen cell
+            cells.RemoveAt(r);
+        }
     }
 
     // populate a corridor (assumed empty)

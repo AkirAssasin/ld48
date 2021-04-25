@@ -47,13 +47,10 @@ public class Cell {
     }
 
     // helper to make hole
-    public void MakeHole (float sfxVolume) {
+    public void MakeHole () {
 
         // does nothing if already has hole
         if (m_hasHole) return;
-
-        // play floor break sound
-        GameManager.s_gameSettings.floorBreakSFX.Play(sfxVolume);
 
         // initialize hole state and display
         m_hasHole = true;

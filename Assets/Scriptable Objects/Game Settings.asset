@@ -28,6 +28,9 @@ MonoBehaviour:
   actorDeadSprite: {fileID: 21300000, guid: 6c3570c897c0d2b46b5454b7cd45e8ff, type: 3}
   actorFallSprite: {fileID: 21300000, guid: 9388b6e9afa261f4ab51ca71adf7ae94, type: 3}
   actorReadySprite: {fileID: 21300000, guid: 5c7a73611f7122746b1f97ec0b31bd93, type: 3}
+  actorFloorBreakSprite: {fileID: 21300000, guid: 5a469cecb460eca4b8ac07d6382472a1, type: 3}
+  muzzleFlashParticleSprite: {fileID: 21300000, guid: b36218979ee04454dae965267fd1f0ce, type: 3}
+  floorBreakParticleSprite: {fileID: 21300000, guid: 54864299e716281468aa4b8c655c6ecf, type: 3}
   gunshotSFX:
     m_clip: {fileID: 8300000, guid: a41a8b8b4046e4e4ca9b3947871f9d2c, type: 3}
     m_volume: 1

@@ -117,7 +117,7 @@ MonoBehaviour:
   m_gunFireDuration: 0.1
   m_gunCooldownDuration: 0.2
   m_fireCameraTilt: 0
-  m_muzzleFlashScale: {x: 0.03, y: 0.125}
+  m_muzzleFlashScale: {x: 0.06, y: 0.25}
   m_muzzleFlashSpread: 45
   m_muzzleFlashDuration: 0.1
   m_yOffset: -0.1
@@ -127,6 +127,7 @@ MonoBehaviour:
   m_faceDirectionDuration: 0.15
   m_moveDuration: 0.15
   m_descendDuration: 0.3
+  m_descendWithFloorBreakDuration: 0.45
   m_moveCurve:
     serializedVersion: 2
     m_Curve:

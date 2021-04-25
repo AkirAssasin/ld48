@@ -51,11 +51,16 @@ public class Corridor {
         m_cells[cell].SetWallState(wallState);
     }
 
+    // helper to check for hole
+    public bool HasHole (int cell) {
+        return m_cells[cell].m_hasHole;
+    }
+
     // helper to make hole
-    public void MakeHole (int cell, float sfxVolume) {
+    public void MakeHole (int cell) {
 
         // make hole in cell
-        m_cells[cell].MakeHole(sfxVolume);
+        m_cells[cell].MakeHole();
     }
 
     // helper to find hole

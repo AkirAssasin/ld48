@@ -105,7 +105,7 @@ public class AngelWing : PoolableObject<AngelWing> {
 
             // spawn particles
             Particle p = Particle.GetFromPool(GameManager.s_gameSettings.particlePrefab);
-            p.Initialize(m_position, m_scale, m_trueAngle, Vector2.zero, m_destroyParticleLife);
+            p.Initialize(m_renderer.sprite, m_position, m_scale, m_trueAngle, Vector2.zero, m_destroyParticleLife);
 
             Pool();
             return;

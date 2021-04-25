@@ -28,6 +28,11 @@ public class GameSettings : ScriptableObject {
     public Sprite actorDeadSprite;
     public Sprite actorFallSprite;
     public Sprite actorReadySprite;
+    public Sprite actorFloorBreakSprite;
+
+    [Header("Particle Sprites")]
+    public Sprite muzzleFlashParticleSprite;
+    public Sprite floorBreakParticleSprite;
 
     [Header("Sounds")]
     public AudioGroup gunshotSFX;

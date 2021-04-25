@@ -21,7 +21,7 @@ public class Particle : PoolableObject<Particle> {
     SpriteRenderer m_renderer;
 
     // initialize function
-    public void Initialize (Vector2 position, Vector2 scale, float angle, Vector2 velocity, float lifetime) {
+    public void Initialize (Sprite sprite, Vector2 position, Vector2 scale, float angle, Vector2 velocity, float lifetime) {
 
         // call poolable initialize
         base.Initialize();
@@ -48,8 +48,8 @@ public class Particle : PoolableObject<Particle> {
         m_transform.localEulerAngles = new Vector3(0, 0, angle);
 
         // initialize sprite
-        m_color.a = 1f;
         m_renderer.color = m_color;
+        m_renderer.sprite = sprite;
         m_renderer.enabled = true;
     }
 
@@ -68,11 +68,11 @@ public class Particle : PoolableObject<Particle> {
         m_transform.position = m_position;
 
         // update scale
-        m_transform.localScale = new Vector3(m_baseScale.x * (2f - nt), m_baseScale.y * (2f - nt), 1f);
+        m_transform.localScale = new Vector3(m_baseScale.x, m_baseScale.y, 1f);
 
         // update color
-        m_color.a = nt;
-        m_renderer.color = m_color;
+        float linearChance = 1f - nt;
+        m_renderer.color = Random.value > (linearChance * linearChance * linearChance) ? m_color : Color.clear;
 
         // update life
         m_life -= dt;
